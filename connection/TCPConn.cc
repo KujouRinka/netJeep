@@ -1,16 +1,16 @@
 #include "TCPConn.h"
 
-#include "ConnState.h"
+#include "proxy_interface.h"
 #include <iostream>
 
 extern long long conn_closed;
 extern mutex closed_count_lock;
 
-TCPConn::TCPConn(io_context &ctx, tcp_sock_p sock_p, long long conn_id)
-        : _ctx(ctx), _in_sock(sock_p), _out_sock(new ip::tcp::socket(ctx)),
-          _state(Auth::instance()), _id(conn_id), _resolver(ctx) {}
+RealConn::RealConn(io_context &ctx, tcp_sock_p sock_p, ConnHandler *handler, long long conn_id)
+        : _ctx(ctx), _in_sock(sock_p), _out_sock(new tcp_sock(ctx)),
+          _handler(handler), _id(conn_id), _resolver(ctx) {}
 
-TCPConn::~TCPConn() {
+RealConn::~RealConn() {
     closed_count_lock.lock();
     ++conn_closed;
     closed_count_lock.unlock();
@@ -18,9 +18,9 @@ TCPConn::~TCPConn() {
     cout << _id << ": connection for: " << _remote_addr << ":" << _remote_port << " CLOSED" << endl;
 }
 
-void TCPConn::in_read() {
+void RealConn::inRead() {
     _in_sock->async_read_some(
-            buffer(_in_read_buf, BUF_SIZE),
+            buffer(_in_to_out_buf, BUF_SIZE),
             [cap = shared_from_this()](const error_code err, ssize_t sz) {
                 // in_on_read
                 if (err) {
@@ -34,30 +34,31 @@ void TCPConn::in_read() {
                     }
                     return;
                 }
-                cap->_state->parseInRead(cap, cap->_in_read_buf, sz);
+                cap->_out_write_len = sz;
+                cap->_handler->parseInRead(cap, cap->_in_to_out_buf, sz);
             }
     );
 }
 
-void TCPConn::out_write() {
+void RealConn::inWrite() {
     async_write(
-            *_out_sock,
-            buffer(_out_write_buf, _out_write_len),
+            *_in_sock,
+            buffer(_out_to_in_buf, _in_write_len),
             [cap = shared_from_this()](const error_code err, ssize_t sz) {
-                // on_out_write
+                // on_in_write
                 if (err) {
-                    cout << cap->_id << " out write: " << err.message() << endl;
+                    cout << cap->_id << " in write: " << err.message() << endl;
                     cap->close();
                     return;
                 }
-                cap->_state->parseOutWrite(cap, cap->_out_write_buf, sz);
+                cap->_handler->parseInWrite(cap, cap->_out_to_in_buf, sz);
             }
     );
 }
 
-void TCPConn::out_read() {
+void RealConn::outRead() {
     _out_sock->async_read_some(
-            buffer(_out_read_buf, BUF_SIZE),
+            buffer(_out_to_in_buf, BUF_SIZE),
             [cap = shared_from_this()](const error_code err, ssize_t sz) {
                 // out_on_read
                 if (err) {
@@ -71,28 +72,34 @@ void TCPConn::out_read() {
                     }
                     return;
                 }
-                cap->_state->parseOutRead(cap, cap->_out_read_buf, sz);
+                cap->_in_write_len = sz;
+                cap->_handler->parseOutRead(cap, cap->_out_to_in_buf, sz);
             }
     );
 }
 
-void TCPConn::in_write() {
+void RealConn::outWrite() {
     async_write(
-            *_in_sock,
-            buffer(_in_write_buf, _in_write_len),
+            *_out_sock,
+            buffer(_in_to_out_buf, _out_write_len),
             [cap = shared_from_this()](const error_code err, ssize_t sz) {
-                // on_in_write
+                // on_out_write
                 if (err) {
-                    cout << cap->_id << " in write: " << err.message() << endl;
+                    cout << cap->_id << " out write: " << err.message() << endl;
                     cap->close();
                     return;
                 }
-                cap->_state->parseInWrite(cap, cap->_in_write_buf, sz);
+                cap->_handler->parseOutWrite(cap, cap->_in_to_out_buf, sz);
             }
     );
 }
 
-void TCPConn::close() {
+void RealConn::transferToDialer(Dialer *dialer) {
+    setHandler(dialer);
+    dialer->doDial(shared_from_this());
+}
+
+void RealConn::close() {
     if (_in_sock->is_open()) {
         _in_sock->cancel();
         _in_sock->close();
@@ -103,6 +110,6 @@ void TCPConn::close() {
     }
 }
 
-void TCPConn::setState(ConnState *state) {
-    _state = state;
+void RealConn::setHandler(ConnHandler *handler) {
+    _handler = handler;
 }

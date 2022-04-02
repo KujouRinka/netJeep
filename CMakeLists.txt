@@ -10,6 +10,8 @@ endif()
 find_package(Boost 1.66.0 REQUIRED COMPONENTS system program_options)
 
 link_libraries(pthread)
-file(GLOB_RECURSE SOURCES "Proxy/*.*")
 
-add_executable(netcat main.cc ${SOURCES})
+include_directories(common connection proxy/include)
+file(GLOB_RECURSE SOURCES "proxy/*.*" connection/*.* common/*.*)
+
+add_executable(netcat main.cc ${SOURCES} connection/connection.cc connection/connection.h)
