@@ -6,49 +6,70 @@
 
 #include "types.h"
 
+class Buffer;
 
 /**
- * @brief ConnHandler is a interface of Listener and Dialer
+ * @brief ConnHandler is a interface of Authenticator and Dialer
  *
- * Every Connection must have a reference of ConnHandler.
+ * Every BackgroundConn must have a reference of ConnHandler.
  * ConnHandler is usually implemented as State design pattern.
- * It change ConnHandler in Connection so that make Connection
+ * It change ConnHandler in BackgroundConn so that make BackgroundConn
  * change its behavior by calling interface defined by ConnHandler.
  *
  */
 class ConnHandler {
 public:
-    virtual ssize_t parseInRead(conn_p conn, const uint8_t *msg, ssize_t sz) { return sz; };
-    virtual ssize_t parseInWrite(conn_p conn, const uint8_t *msg, ssize_t sz) { return sz; };
-    virtual ssize_t parseOutRead(conn_p conn, const uint8_t *msg, ssize_t sz) { return sz; };
-    virtual ssize_t parseOutWrite(conn_p conn, const uint8_t *msg, ssize_t sz) { return sz; };
+    /**
+     * @brief be called after read from in socket.
+     * @param conn who calls this method
+     * @param holder connection to be prevented to be freed while async wait
+     */
+    virtual ssize_t parseInRead(conn_p conn, conn_p holder);
 
-protected:
-    virtual void setHandler(conn_p conn, ConnHandler *handler);
+    /**
+     * @brief be called after write to in socket.
+     * @param conn who calls this method
+     * @param holder connection to be prevented to be freed while async wait
+     */
+    virtual ssize_t parseInWrite(conn_p conn, conn_p holder);
+
+    /**
+     * @brief be called after read from out socket.
+     * @param conn who calls this method
+     * @param holder connection to be prevented to be freed while async wait
+     */
+    virtual ssize_t parseOutRead(conn_p conn, conn_p holder);
+
+    /**
+     * @brief be called after write to out socket.
+     * @param conn who calls this method
+     * @param holder connection to be prevented to be freed while async wait
+     */
+    virtual ssize_t parseOutWrite(conn_p conn, conn_p holder);
 };
 
 /**
- * @brief Listener should parse connection information for transfer task to Dialer.
+ * @brief Authenticator should parse connection information for transfer task to Dialer.
  *
- * Listener parses data of remote address, remote port,
+ * Authenticator parses data of remote address, remote port,
  * connection type(TCP, UPD, ...) and address type(IPv4, IPv6, Domain)
- * and stores them back to Connection.
- * Listener are usually implemented as State design pattern.
+ * and stores them back to BackgroundConn.
+ * Authenticator are usually implemented as State design pattern.
  * In its last step it must call conn->transferForDialer(Dialer *)
  * for transferring the task of transferring data to specified Dialer.
  *
- * Listener usually does encode/encrypt and decode/decrypt works.
+ * Authenticator usually does encode/encrypt and decode/decrypt works.
  *
  */
-class Listener : public ConnHandler {
+class Authenticator : public ConnHandler {
 
 };
 
 /**
- * @brief Dialer takes over transferring data task from Listener.
+ * @brief Dialer takes over transferring data task from Authenticator.
  *
  * Dialer make a connection between local machine and remote address
- * according to data in Connection. It must be started by calling
+ * according to data in BackgroundConn. It must be started by calling
  * doDial(tcp_p). If connection is established, doDial() function
  * will open pipe between local and remote by calling conn->inRead()
  * and conn->outRead.
@@ -57,8 +78,7 @@ class Listener : public ConnHandler {
  *
  */
 class Dialer : public ConnHandler {
-public:
-    virtual void doDial(conn_p conn) = 0;
+
 };
 
 

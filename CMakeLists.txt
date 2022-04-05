@@ -11,7 +11,7 @@ find_package(Boost 1.66.0 REQUIRED COMPONENTS system program_options)
 
 link_libraries(pthread)
 
-include_directories(common connection proxy/include)
+include_directories(common/include connection/include proxy/include)
 file(GLOB_RECURSE SOURCES "proxy/*.*" connection/*.* common/*.*)
 
-add_executable(netcat main.cc ${SOURCES} connection/connection.cc connection/connection.h)
+add_executable(netcat main.cc ${SOURCES})
