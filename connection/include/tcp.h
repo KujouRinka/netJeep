@@ -3,39 +3,41 @@
 
 #include "connection.h"
 
+class ConnHolder;
+
+/**
+ * @brief TCPIn is TCP implementation of in socket.
+ */
 class TCPIn : public InConn {
 public:
-    TCPIn(io_context &ctx, tcp_sock_p p, ConnHandler *h, long long id)
-            : InConn(ctx, h, id), _in_sock(p) {}
-    ~TCPIn() override;
+    TCPIn(tcp_sock_p p, ConnHolder *holder, AcceptStrategy *strategy);
 
-    // hold OutConn
-    void inRead(conn_p holder) override;
-    void inWrite(conn_p holder) override;
+    void inRead(holder_p holder) override;
+    void inWrite(holder_p holder) override;
     void closeMe(CloseType type) override;
 
 private:
     tcp_sock_p _in_sock;
 };
 
-
+/**
+ * @brief TCPOut is TCP implementation of out socket.
+ */
 class TCPOut : public OutConn {
 public:
-    TCPOut(conn_p p) : OutConn(p), _out_sock(new tcp_sock(_ctx)), _resolver(p->getCtx()) {};
-    ~TCPOut() override;
+    TCPOut(ConnHolder *holder, DialStrategy *strategy);
 
-    // hold InConn
-    void outRead(conn_p holder) override;
-    void outWrite(conn_p holer) override;
+    void outRead(holder_p holder) override;
+    void outWrite(holder_p holder) override;
     void closeMe(CloseType type) override;
 
-    void dial(conn_p in_holder) override;
+    void dial(holder_p holder/* TODO: route info */) override;
 
 private:
     tcp_sock_p _out_sock;
     ip::tcp::resolver _resolver;
 
-    void dialHelper(ip::tcp::endpoint ep, conn_p in_holder);
+    void dialHelper(ip::tcp::endpoint ep, holder_p holder);
 };
 
 #endif

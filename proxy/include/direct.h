@@ -6,18 +6,18 @@
 #include <string>
 #include <mutex>
 
-#include <asio.hpp>
-
-class DirectDialer : public Dialer {
+/**
+ * @brief DialDirect implements how data transferred directly.
+ */
+class DialDirect : public DialStrategy {
 public:
-    static DirectDialer *instance();
-    ssize_t parseInRead(conn_p conn, conn_p holder) override;
-    ssize_t parseInWrite(conn_p conn, conn_p holder) override;
-    ssize_t parseOutRead(conn_p conn, conn_p holder) override;
-    ssize_t parseOutWrite(conn_p conn, conn_p holder) override;
+    ssize_t onOutRead(ConnHolder *holder, OutConn *out) override;
+    ssize_t onOutWrite(ConnHolder *holder, OutConn *out) override;
+    static DialStrategy *instance();
+    static DialStrategy *startStat();
 
 private:
-    static DirectDialer*_self;
+    static DialStrategy *_self;
     static std::once_flag _of;
 };
 

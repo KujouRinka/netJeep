@@ -1,12 +1,15 @@
+// This header has been deprecated.
+// Buffer for data transfer has been
+// replaced by asio::streambuf
+
 #ifndef NETCAT_BUFFER_H
 #define NETCAT_BUFFER_H
 
-// #include "types.h"
 #include <cstdlib>
 #include <cstring>
 #include <cstdint>
 
-// TODO: implement high robust buffer
+[[deprecated("Weak robustness. Replaced by asio::streambuf")]]
 static constexpr ssize_t BUF_CAP = 2048;
 class Buffer {
 public:

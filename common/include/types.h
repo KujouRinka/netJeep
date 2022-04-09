@@ -5,10 +5,13 @@
 #include <asio.hpp>
 
 class BaseConn;
+class ConnHolder;
 class InConn;
 class OutConn;
 
-using conn_p = std::shared_ptr<BaseConn>;
+constexpr ssize_t MAX_BUF_SIZE = 2048;
+
+using holder_p = std::shared_ptr<ConnHolder>;
 
 using tcp_sock = asio::ip::tcp::socket;
 using udp_sock = asio::ip::udp::socket;
@@ -20,9 +23,6 @@ using raw_sock_p = std::shared_ptr<raw_sock>;
 
 using in_p = std::shared_ptr<InConn>;
 using out_p = std::shared_ptr<OutConn>;
-
-// constexpr size_t BUF_CAP = 2048;
-// using Buffer = uint8_t;
 
 enum class ConnType {
     RAW = 0,

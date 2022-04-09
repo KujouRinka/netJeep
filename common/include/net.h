@@ -7,6 +7,9 @@
 
 using namespace std;
 
+/**
+ * @brief NetAddress stores information of real remote target.
+ */
 class NetAddress {
 public:
     NetAddress() = default;
