@@ -23,9 +23,11 @@ class ConnHolder;
  */
 class AcceptStrategy {
 public:
+    virtual ssize_t toInRead(ConnHolder *holder, InConn *in);
+    virtual ssize_t toInWrite(ConnHolder *holder, InConn *in);
     /**
      * onInRead will be called in callback of async read of in socket.
-     * It calls holder->outWrite() when all jobs done.
+     * It calls holder->toOutWrite() when all jobs done.
      *
      * @param holder ConnHolder which holds owner of AcceptStrategy.
      * @param in InConn which holds this AcceptStrategy.
@@ -35,13 +37,15 @@ public:
 
     /**
      * onInWrite will be called in callback of async write of in socket.
-     * It calls holder->outRead() when all jobs done.
+     * It calls holder->toOutRead() when all jobs done.
      *
      * @param holder ConnHolder which holds owner of AcceptStrategy.
      * @param in InConn which holds this AcceptStrategy.
      * @return returns -1 if operation failed.
      */
     virtual ssize_t onInWrite(ConnHolder *holder, InConn *in) = 0;
+
+    virtual void stop();
 };
 
 
@@ -58,10 +62,11 @@ public:
  */
 class DialStrategy {
 public:
-
+    virtual ssize_t toOutRead(ConnHolder *holder, OutConn *out);
+    virtual ssize_t toOutWrite(ConnHolder *holder, OutConn *out);
     /**
      * onOutRead will be called in callback of async read of out socket.
-     * It calls holder->inWrite() when all jobs done.
+     * It calls holder->toInWrite() when all jobs done.
      *
      * @param holder ConnHolder which holds owner of AcceptStrategy.
      * @param in InConn which holds this AcceptStrategy.
@@ -72,13 +77,15 @@ public:
 
     /**
      * onOutWrite will be called in callback of async write of out socket.
-     * It calls holder->inRead() when all jobs done.
+     * It calls holder->toInRead() when all jobs done.
      *
      * @param holder ConnHolder which holds owner of AcceptStrategy.
      * @param in InConn which holds this AcceptStrategy.
      * @return returns -1 if operation failed.
      */
     virtual ssize_t onOutWrite(ConnHolder *holder, OutConn *out) = 0;
+
+    virtual void stop();
 };
 
 

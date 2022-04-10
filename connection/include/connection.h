@@ -23,13 +23,16 @@ public:
     InConn(ConnHolder *holder, AcceptStrategy *strategy)
             : _holder(holder), _strategy(strategy) {}
     virtual ~InConn() = default;
+
+    virtual void toInRead(holder_p holder);
+    virtual void toInWrite(holder_p holder);
     virtual void inRead(holder_p holder) = 0;
     virtual void inWrite(holder_p holder) = 0;
 
     ConnHolder *&holder();
     AcceptStrategy *&strategy();
 
-    virtual void closeMe(CloseType type) = 0;;
+    virtual void closeMe(CloseType type) = 0;
 
 protected:
     ConnHolder *_holder;
@@ -51,6 +54,8 @@ public:
             : _holder(holder), _strategy(strategy) {}
     virtual ~OutConn() = default;
 
+    virtual void toOutRead(holder_p holder);
+    virtual void toOutWrite(holder_p holder);
     virtual void outRead(holder_p holder) = 0;
     virtual void outWrite(holder_p holder) = 0;
 

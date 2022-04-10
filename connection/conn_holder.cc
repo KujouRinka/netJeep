@@ -17,9 +17,27 @@ ConnHolder::ConnHolder(asio::io_context &ctx, in_p in, long long id)
 }
 
 ConnHolder::~ConnHolder() {
+    _in->strategy()->stop();
+    _out->strategy()->stop();
     closed_count_lock.lock();
     ++conn_closed;
     closed_count_lock.unlock();
+}
+
+void ConnHolder::toInRead() {
+    _in->toInRead(shared_from_this());
+}
+
+void ConnHolder::toInWrite() {
+    _in->toInWrite(shared_from_this());
+}
+
+void ConnHolder::toOutRead() {
+    _out->toOutRead(shared_from_this());
+}
+
+void ConnHolder::toOutWrite() {
+    _out->toOutWrite(shared_from_this());
 }
 
 void ConnHolder::inRead() {

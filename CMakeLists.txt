@@ -9,7 +9,8 @@ endif()
 
 find_package(Boost 1.66.0 REQUIRED COMPONENTS system program_options)
 
-link_libraries(pthread)
+link_libraries(pthread cryptopp)
+link_directories("/usr/local/lib")
 
 include_directories(common/include connection/include proxy/include)
 file(GLOB_RECURSE SOURCES "proxy/*.*" connection/*.* common/*.*)

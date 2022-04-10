@@ -29,6 +29,10 @@ public:
     ~ConnHolder();
 
     void start();
+    void toInRead();
+    void toInWrite();
+    void toOutRead();
+    void toOutWrite();
     void inRead();
     void inWrite();
     void outRead();
@@ -39,9 +43,9 @@ public:
     asio::streambuf &IOBuf();
     asio::streambuf &OIBuf();
     size_t IOMaxRDTo();
-    size_t IOMaxWRFrom();
+    size_t IOSize();
     size_t OIMaxRDTo();
-    size_t OIMaxWRFrom();
+    size_t OISize();
 
     asio::io_context &getCtx();
     long long id();
@@ -68,7 +72,7 @@ private:
 
 // below are inline methods' definitions.
 inline void ConnHolder::start() {
-    inRead();
+    toInRead();
 }
 
 inline std::iostream &ConnHolder::IOBufStream() {
@@ -91,7 +95,7 @@ inline size_t ConnHolder::IOMaxRDTo() {
     return _in_to_out_buf.max_size() - _in_to_out_buf.size();
 }
 
-inline size_t ConnHolder::IOMaxWRFrom() {
+inline size_t ConnHolder::IOSize() {
     return _in_to_out_buf.size();
 }
 
@@ -99,7 +103,7 @@ inline size_t ConnHolder::OIMaxRDTo() {
     return _out_to_in_buf.max_size() - _out_to_in_buf.size();
 }
 
-inline size_t ConnHolder::OIMaxWRFrom() {
+inline size_t ConnHolder::OISize() {
     return _out_to_in_buf.size();
 }
 

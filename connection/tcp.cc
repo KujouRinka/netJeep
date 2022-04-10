@@ -140,8 +140,8 @@ void TCPOut::dialHelper(ip::tcp::endpoint ep, holder_p holder) {
                 }
                 cout << cap->id() << ": TCP://" << cap->remote().addr() << ":"
                      << cap->remote().port() << " connected" << endl;
-                cap->outRead();
-                cap->inRead();
+                cap->toOutRead();
+                cap->toInRead();
             }
     );
 }
