@@ -22,10 +22,6 @@ ConnHolder::~ConnHolder() {
     closed_count_lock.unlock();
 }
 
-void ConnHolder::start() {
-    inRead();
-}
-
 void ConnHolder::inRead() {
     _in->inRead(shared_from_this());
 }
@@ -40,50 +36,6 @@ void ConnHolder::outRead() {
 
 void ConnHolder::outWrite() {
     _out->outWrite(shared_from_this());
-}
-
-std::iostream &ConnHolder::IOBufStream() {
-    return _in_to_out_stream;
-}
-
-std::iostream &ConnHolder::OIBufStream() {
-    return _out_to_in_stream;
-}
-
-asio::streambuf &ConnHolder::IOBuf() {
-    return _in_to_out_buf;
-}
-
-asio::streambuf &ConnHolder::OIBuf() {
-    return _out_to_in_buf;
-}
-
-size_t ConnHolder::IOMaxRDTo() {
-    return _in_to_out_buf.max_size() - _in_to_out_buf.size();
-}
-
-size_t ConnHolder::IOMaxWRFrom() {
-    return _in_to_out_buf.size();
-}
-
-size_t ConnHolder::OIMaxRDTo() {
-    return _out_to_in_buf.max_size() - _out_to_in_buf.size();
-}
-
-size_t ConnHolder::OIMaxWRFrom() {
-    return _out_to_in_buf.size();
-}
-
-asio::io_context &ConnHolder::getCtx() {
-    return _ctx;
-}
-
-long long ConnHolder::id() {
-    return _id;
-}
-
-NetAddress &ConnHolder::remote() {
-    return _remote;
 }
 
 void ConnHolder::dial() {

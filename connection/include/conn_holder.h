@@ -66,4 +66,53 @@ private:
     out_p _out;
 };
 
+// below are inline methods' definitions.
+inline void ConnHolder::start() {
+    inRead();
+}
+
+inline std::iostream &ConnHolder::IOBufStream() {
+    return _in_to_out_stream;
+}
+
+inline std::iostream &ConnHolder::OIBufStream() {
+    return _out_to_in_stream;
+}
+
+inline asio::streambuf &ConnHolder::IOBuf() {
+    return _in_to_out_buf;
+}
+
+inline asio::streambuf &ConnHolder::OIBuf() {
+    return _out_to_in_buf;
+}
+
+inline size_t ConnHolder::IOMaxRDTo() {
+    return _in_to_out_buf.max_size() - _in_to_out_buf.size();
+}
+
+inline size_t ConnHolder::IOMaxWRFrom() {
+    return _in_to_out_buf.size();
+}
+
+inline size_t ConnHolder::OIMaxRDTo() {
+    return _out_to_in_buf.max_size() - _out_to_in_buf.size();
+}
+
+inline size_t ConnHolder::OIMaxWRFrom() {
+    return _out_to_in_buf.size();
+}
+
+inline asio::io_context &ConnHolder::getCtx() {
+    return _ctx;
+}
+
+inline long long ConnHolder::id() {
+    return _id;
+}
+
+inline NetAddress &ConnHolder::remote() {
+    return _remote;
+}
+
 #endif

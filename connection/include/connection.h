@@ -65,4 +65,21 @@ protected:
     DialStrategy *_strategy;
 };
 
+// below are inline methods' definitions.
+inline ConnHolder *&InConn::holder() {
+    return _holder;
+}
+
+inline AcceptStrategy *&InConn::strategy() {
+    return _strategy;
+}
+
+inline ConnHolder *&OutConn::holder() {
+    return _holder;
+}
+
+inline DialStrategy *&OutConn::strategy() {
+    return _strategy;
+}
+
 #endif

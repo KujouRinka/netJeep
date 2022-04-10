@@ -4,7 +4,6 @@
 #include <memory>
 #include <asio.hpp>
 
-class BaseConn;
 class ConnHolder;
 class InConn;
 class OutConn;
