@@ -1,6 +1,6 @@
-#include "direct.h"
+#include "proxy/direct.h"
 
-#include "conn_holder.h"
+#include "connection/conn_holder.h"
 
 using namespace proxy::Direct;
 

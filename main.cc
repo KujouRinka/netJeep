@@ -2,13 +2,13 @@
 #include <asio.hpp>
 #include <memory>
 
-#include "tcp.h"
-#include "types.h"
-#include "conn_holder.h"
+#include "connection/tcp.h"
+#include "common/types.h"
+#include "connection/conn_holder.h"
 
-#include "socks.h"
+#include "proxy/socks.h"
 
-#include "aes_test.h"
+#include "proxy/aes_test.h"
 
 #include <mutex>
 
@@ -41,10 +41,7 @@ void runCtx() {
     ctx.run();
 }
 
-proxy::AES128::Cipher *cipher;
-
 int main() {
-    cipher = new proxy::AES128::Cipher("hello this is a cipher");
     to_listen();
     signal_set signal_set(ctx);
     signal_set.add(SIGINT);

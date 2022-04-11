@@ -1,7 +1,7 @@
-#include "socks.h"
+#include "proxy/socks.h"
 
-#include "conn_holder.h"
-#include "connection.h"
+#include "connection/conn_holder.h"
+#include "connection/connection.h"
 
 using namespace proxy::Socks;
 
@@ -38,10 +38,10 @@ ssize_t Negotiation::onInRead(ConnHolder *holder, InConn *in) {
 ssize_t Negotiation::onInWrite(ConnHolder *holder, InConn *in) {
     if (holder->OIBuf().size() != 0) {
         holder->inWrite();
-        return 0;
+    } else {
+        in->strategy() = ReqParse::instance();
+        holder->inRead();
     }
-    in->strategy() = ReqParse::instance();
-    holder->inRead();
     return 0;
 }
 
@@ -114,10 +114,10 @@ ssize_t ReqParse::onInRead(ConnHolder *holder, InConn *in) {
 ssize_t ReqParse::onInWrite(ConnHolder *holder, InConn *in) {
     if (holder->OIBuf().size() != 0) {
         holder->inWrite();
-        return 0;
+    } else {
+        in->strategy() = Established::instance();
+        holder->dial();
     }
-    in->strategy() = Established::instance();
-    holder->dial();
     return 0;
 }
 

@@ -8,7 +8,7 @@
 #include <mutex>
 #include <string>
 
-#include "types.h"
+#include "common/types.h"
 
 namespace proxy::Socks {
     /**

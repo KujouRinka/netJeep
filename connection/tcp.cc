@@ -29,7 +29,7 @@ void TCPIn::inRead(holder_p holder) {
                     if (err != error::eof) {
                         _holder->closeAll();
                     } else {
-                        // cap->closeMe(CloseType::read);
+                        closeMe(CloseType::read);
                         _holder->closeOut(CloseType::write);
                     }
                     return;
@@ -96,7 +96,7 @@ void TCPOut::outRead(holder_p holder) {
                     if (err != error::eof) {
                         _holder->closeAll();
                     } else {
-                        // cap->closeMe(CloseType::read);
+                        closeMe(CloseType::read);
                         _holder->closeIn(CloseType::write);
                     }
                     return;

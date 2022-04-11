@@ -6,8 +6,8 @@
 #include <asio.hpp>
 #include <utility>
 
-#include "net.h"
-#include "types.h"
+#include "common/net.h"
+#include "common/types.h"
 
 /**
  * @brief ConnHolder holds connection for in and out socket.

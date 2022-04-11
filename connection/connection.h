@@ -3,9 +3,9 @@
 
 #include <asio.hpp>
 
-#include "net.h"
-#include "types.h"
-#include "proxy_interface.h"
+#include "common/net.h"
+#include "common/types.h"
+#include "proxy/proxy_interface.h"
 
 using namespace asio;
 
