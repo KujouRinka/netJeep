@@ -10,8 +10,10 @@ class ConnHolder;
  */
 class TCPIn : public InConn {
 public:
-    TCPIn(tcp_sock_p p, ConnHolder *holder, AcceptStrategy *strategy);
+    TCPIn(tcp_sock_p p, ConnHolder *holder, proxy::AcceptStrategy *strategy);
 
+    void toInRead(holder_p holder) override;
+    void toInWrite(holder_p holder) override;
     void inRead(holder_p holder) override;
     void inWrite(holder_p holder) override;
     void closeMe(CloseType type) override;
@@ -25,8 +27,10 @@ private:
  */
 class TCPOut : public OutConn {
 public:
-    TCPOut(ConnHolder *holder, DialStrategy *strategy);
+    TCPOut(ConnHolder *holder, proxy::DialStrategy *strategy);
 
+    void toOutRead(holder_p holder) override;
+    void toOutWrite(holder_p holder) override;
     void outRead(holder_p holder) override;
     void outWrite(holder_p holder) override;
     void closeMe(CloseType type) override;

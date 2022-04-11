@@ -8,6 +8,8 @@
 
 #include "socks.h"
 
+#include "aes_test.h"
+
 #include <mutex>
 
 using namespace std;
@@ -27,7 +29,7 @@ void to_listen() {
         if (!err) {
             ++conn_opened;
             make_shared<ConnHolder>(
-                    ctx, make_shared<TCPIn>(sp, nullptr, AcceptSocks::startStat()),
+                    ctx, make_shared<TCPIn>(sp, nullptr, proxy::Socks::Acceptor::startStat()),
                     conn_opened
             )->start();
         }
@@ -39,7 +41,10 @@ void runCtx() {
     ctx.run();
 }
 
+proxy::AES128::Cipher *cipher;
+
 int main() {
+    cipher = new proxy::AES128::Cipher("hello this is a cipher");
     to_listen();
     signal_set signal_set(ctx);
     signal_set.add(SIGINT);

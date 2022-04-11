@@ -6,19 +6,23 @@
 #include <string>
 #include <mutex>
 
-/**
- * @brief DialDirect implements how data transferred directly.
- */
-class DialDirect : public DialStrategy {
-public:
-    ssize_t onOutRead(ConnHolder *holder, OutConn *out) override;
-    ssize_t onOutWrite(ConnHolder *holder, OutConn *out) override;
-    static DialStrategy *instance();
-    static DialStrategy *startStat();
+namespace proxy::Direct {
 
-private:
-    static DialStrategy *_self;
-    static std::once_flag _of;
-};
+    /**
+     * @brief DialDirect implements how data transferred directly.
+     */
+    class Dialer : public DialStrategy {
+    public:
+        ssize_t onOutRead(ConnHolder *holder, OutConn *out) override;
+        ssize_t onOutWrite(ConnHolder *holder, OutConn *out) override;
+        static DialStrategy *instance();
+        static DialStrategy *startStat();
+
+    private:
+        static DialStrategy *_self;
+        static std::once_flag _of;
+    };
+
+}
 
 #endif

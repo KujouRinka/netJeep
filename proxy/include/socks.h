@@ -10,54 +10,56 @@
 
 #include "types.h"
 
-/**
- * @brief AcceptSocks implements socks handshake of passive endpoints.
- *
- * @details https://en.wikipedia.org/wiki/SOCKS
- *
- */
-class AcceptSocks : public AcceptStrategy {
-public:
-    ssize_t onInRead(ConnHolder *holder, InConn *in) override = 0;
-    ssize_t onInWrite(ConnHolder *holder, InConn *in) override = 0;
+namespace proxy::Socks {
+    /**
+     * @brief AcceptSocks implements socks handshake of passive endpoints.
+     *
+     * @details https://en.wikipedia.org/wiki/SOCKS
+     *
+     */
+    class Acceptor : public AcceptStrategy {
+    public:
+        ssize_t onInRead(ConnHolder *holder, InConn *in) override = 0;
+        ssize_t onInWrite(ConnHolder *holder, InConn *in) override = 0;
 
-    static AcceptStrategy *startStat();
-};
+        static AcceptStrategy *startStat();
+    };
 
-class Auth : public AcceptSocks {
-public:
-    ssize_t onInRead(ConnHolder *holder, InConn *in) override;
-    ssize_t onInWrite(ConnHolder *holder, InConn *in) override;
-    static AcceptStrategy *instance();
+    class Negotiation : public Acceptor {
+    public:
+        ssize_t onInRead(ConnHolder *holder, InConn *in) override;
+        ssize_t onInWrite(ConnHolder *holder, InConn *in) override;
+        static AcceptStrategy *instance();
 
-private:
-    Auth() = default;
-    static AcceptStrategy *_self;
-    static std::once_flag _of;
-};
+    private:
+        Negotiation() = default;
+        static AcceptStrategy *_self;
+        static std::once_flag _of;
+    };
 
-class URLReq : public AcceptSocks {
-public:
-    ssize_t onInRead(ConnHolder *holder, InConn *in) override;
-    ssize_t onInWrite(ConnHolder *holder, InConn *in) override;
-    static AcceptStrategy *instance();
+    class ReqParse : public Acceptor {
+    public:
+        ssize_t onInRead(ConnHolder *holder, InConn *in) override;
+        ssize_t onInWrite(ConnHolder *holder, InConn *in) override;
+        static AcceptStrategy *instance();
 
-private:
-    URLReq() = default;
-    static AcceptStrategy *_self;
-    static std::once_flag _of;
-};
+    private:
+        ReqParse() = default;
+        static AcceptStrategy *_self;
+        static std::once_flag _of;
+    };
 
-class Established : public AcceptSocks {
-public:
-    ssize_t onInRead(ConnHolder *holder, InConn *in) override;
-    ssize_t onInWrite(ConnHolder *holder, InConn *in) override;
-    static AcceptStrategy *instance();
+    class Established : public Acceptor {
+    public:
+        ssize_t onInRead(ConnHolder *holder, InConn *in) override;
+        ssize_t onInWrite(ConnHolder *holder, InConn *in) override;
+        static AcceptStrategy *instance();
 
-private:
-    Established() = default;
-    static AcceptStrategy *_self;
-    static std::once_flag _of;
-};
+    private:
+        Established() = default;
+        static AcceptStrategy *_self;
+        static std::once_flag _of;
+    };
+}
 
 #endif

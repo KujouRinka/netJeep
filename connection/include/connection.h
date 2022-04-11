@@ -20,7 +20,7 @@ using namespace asio;
  */
 class InConn {
 public:
-    InConn(ConnHolder *holder, AcceptStrategy *strategy)
+    InConn(ConnHolder *holder, proxy::AcceptStrategy *strategy)
             : _holder(holder), _strategy(strategy) {}
     virtual ~InConn() = default;
 
@@ -30,13 +30,13 @@ public:
     virtual void inWrite(holder_p holder) = 0;
 
     ConnHolder *&holder();
-    AcceptStrategy *&strategy();
+    proxy::AcceptStrategy *&strategy();
 
     virtual void closeMe(CloseType type) = 0;
 
 protected:
     ConnHolder *_holder;
-    AcceptStrategy *_strategy;
+    proxy::AcceptStrategy *_strategy;
 };
 
 /**
@@ -50,7 +50,7 @@ protected:
  */
 class OutConn {
 public:
-    OutConn(ConnHolder *holder, DialStrategy *strategy)
+    OutConn(ConnHolder *holder, proxy::DialStrategy *strategy)
             : _holder(holder), _strategy(strategy) {}
     virtual ~OutConn() = default;
 
@@ -60,14 +60,14 @@ public:
     virtual void outWrite(holder_p holder) = 0;
 
     ConnHolder *&holder();
-    DialStrategy *&strategy();
+    proxy::DialStrategy *&strategy();
 
     virtual void closeMe(CloseType type) = 0;
     virtual void dial(holder_p holder/* route info */) = 0;
 
 protected:
     ConnHolder *_holder;
-    DialStrategy *_strategy;
+    proxy::DialStrategy *_strategy;
 };
 
 // below are inline methods' definitions.
@@ -75,7 +75,7 @@ inline ConnHolder *&InConn::holder() {
     return _holder;
 }
 
-inline AcceptStrategy *&InConn::strategy() {
+inline proxy::AcceptStrategy *&InConn::strategy() {
     return _strategy;
 }
 
@@ -83,7 +83,7 @@ inline ConnHolder *&OutConn::holder() {
     return _holder;
 }
 
-inline DialStrategy *&OutConn::strategy() {
+inline proxy::DialStrategy *&OutConn::strategy() {
     return _strategy;
 }
 

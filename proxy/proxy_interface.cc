@@ -3,6 +3,8 @@
 #include "connection.h"
 #include "conn_holder.h"
 
+using namespace proxy;
+
 ssize_t AcceptStrategy::toInRead(ConnHolder *holder, InConn *in) {
     holder->inRead();
     return 0;

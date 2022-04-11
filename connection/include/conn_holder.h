@@ -50,6 +50,7 @@ public:
     asio::io_context &getCtx();
     long long id();
     NetAddress &remote();
+    NetAddress &dialAddress();
 
     void dial();
     void closeIn(CloseType type);
@@ -64,6 +65,8 @@ private:
     asio::streambuf _out_to_in_buf;
     std::iostream _in_to_out_stream;
     std::iostream _out_to_in_stream;
+
+    NetAddress _dial;
     NetAddress _remote;
 
     in_p _in;
@@ -117,6 +120,10 @@ inline long long ConnHolder::id() {
 
 inline NetAddress &ConnHolder::remote() {
     return _remote;
+}
+
+inline NetAddress &ConnHolder::dialAddress() {
+    return _dial;
 }
 
 #endif

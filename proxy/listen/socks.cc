@@ -3,18 +3,20 @@
 #include "conn_holder.h"
 #include "connection.h"
 
-AcceptStrategy *Auth::_self;
-std::once_flag Auth::_of;
-AcceptStrategy *URLReq::_self;
-std::once_flag URLReq::_of;
-AcceptStrategy *Established::_self;
+using namespace proxy::Socks;
+
+proxy::AcceptStrategy *Negotiation::_self;
+std::once_flag Negotiation::_of;
+proxy::AcceptStrategy *ReqParse::_self;
+std::once_flag ReqParse::_of;
+proxy::AcceptStrategy *Established::_self;
 std::once_flag Established::_of;
 
-AcceptStrategy *AcceptSocks::startStat() {
-    return Auth::instance();
+proxy::AcceptStrategy *Acceptor::startStat() {
+    return Negotiation::instance();
 }
 
-ssize_t Auth::onInRead(ConnHolder *holder, InConn *in) {
+ssize_t Negotiation::onInRead(ConnHolder *holder, InConn *in) {
     uint8_t buf[257];
     holder->IOBufStream().read((char *) buf, 2);
     uint8_t n_method = buf[1];
@@ -33,22 +35,22 @@ ssize_t Auth::onInRead(ConnHolder *holder, InConn *in) {
     return 0;
 }
 
-ssize_t Auth::onInWrite(ConnHolder *holder, InConn *in) {
+ssize_t Negotiation::onInWrite(ConnHolder *holder, InConn *in) {
     if (holder->OIBuf().size() != 0) {
-        cout << holder->id() << ": return package corrupt" << endl;
-        return -1;
+        holder->inWrite();
+        return 0;
     }
-    in->strategy() = URLReq::instance();
+    in->strategy() = ReqParse::instance();
     holder->inRead();
     return 0;
 }
 
-AcceptStrategy *Auth::instance() {
-    std::call_once(_of, [] { _self = new Auth(); });
+proxy::AcceptStrategy *Negotiation::instance() {
+    std::call_once(_of, [] { _self = new Negotiation(); });
     return _self;
 }
 
-ssize_t URLReq::onInRead(ConnHolder *holder, InConn *in) {
+ssize_t ReqParse::onInRead(ConnHolder *holder, InConn *in) {
     uint16_t buf_size = holder->IOBuf().size();
     if (buf_size < 5) {
         cout << holder->id() << ": invalid socks5 request" << endl;
@@ -109,32 +111,32 @@ ssize_t URLReq::onInRead(ConnHolder *holder, InConn *in) {
 
 }
 
-ssize_t URLReq::onInWrite(ConnHolder *holder, InConn *in) {
+ssize_t ReqParse::onInWrite(ConnHolder *holder, InConn *in) {
     if (holder->OIBuf().size() != 0) {
-        cout << holder->id() << ": return request result corrupt" << endl;
-        return -1;
+        holder->inWrite();
+        return 0;
     }
     in->strategy() = Established::instance();
     holder->dial();
     return 0;
 }
 
-AcceptStrategy *URLReq::instance() {
-    std::call_once(_of, [] { _self = new URLReq(); });
+proxy::AcceptStrategy *ReqParse::instance() {
+    std::call_once(_of, [] { _self = new ReqParse(); });
     return _self;
 }
 
 ssize_t Established::onInRead(ConnHolder *holder, InConn *in) {
-    holder->outWrite();
+    holder->toOutWrite();
     return 0;
 }
 
 ssize_t Established::onInWrite(ConnHolder *holder, InConn *in) {
-    holder->outRead();
+    holder->toOutRead();
     return 0;
 }
 
-AcceptStrategy *Established::instance() {
+proxy::AcceptStrategy *Established::instance() {
     std::call_once(_of, [] { _self = new Established(); });
     return _self;
 }

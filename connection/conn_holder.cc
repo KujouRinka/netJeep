@@ -3,8 +3,11 @@
 #include "tcp.h"
 #include "direct.h"
 
+#include "aes_test.h"
+
 extern std::mutex closed_count_lock;
 extern long long conn_closed;
+extern proxy::AES128::Cipher *cipher;
 
 ConnHolder::ConnHolder(asio::io_context &ctx, in_p in, long long id)
         : _ctx(ctx), _in(std::move(in)), _id(id),
@@ -61,7 +64,8 @@ void ConnHolder::dial() {
     switch (_remote.conn_type()) {
         case ConnType::TCP:
             // TODO: pick route for connection
-            _out = make_shared<TCPOut>(this, DialDirect::startStat());
+            _dial = _remote;
+            _out = make_shared<TCPOut>(this, proxy::Direct::Dialer::startStat());
             _out->dial(shared_from_this());
             break;
         case ConnType::UDP:

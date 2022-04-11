@@ -2,24 +2,26 @@
 
 #include "conn_holder.h"
 
-DialStrategy *DialDirect::_self;
-std::once_flag DialDirect::_of;
+using namespace proxy::Direct;
 
-ssize_t DialDirect::onOutRead(ConnHolder *holder, OutConn *out) {
-    holder->inWrite();
+proxy::DialStrategy *Dialer::_self;
+std::once_flag Dialer::_of;
+
+ssize_t Dialer::onOutRead(ConnHolder *holder, OutConn *out) {
+    holder->toInWrite();
     return 0;
 }
 
-ssize_t DialDirect::onOutWrite(ConnHolder *holder, OutConn *out) {
-    holder->inRead();
+ssize_t Dialer::onOutWrite(ConnHolder *holder, OutConn *out) {
+    holder->toInRead();
     return 0;
 }
 
-DialStrategy *DialDirect::instance() {
-    std::call_once(_of, [] { _self = new DialDirect; });
+proxy::DialStrategy *Dialer::instance() {
+    std::call_once(_of, [] { _self = new Dialer; });
     return _self;
 }
 
-DialStrategy *DialDirect::startStat() {
-    return DialDirect::instance();
+proxy::DialStrategy *Dialer::startStat() {
+    return Dialer::instance();
 }

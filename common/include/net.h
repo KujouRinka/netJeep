@@ -21,6 +21,25 @@ public:
               _remote_address(addr),
               _remote_port(port) {}
 
+    NetAddress(const NetAddress &rhs) {
+        _remote_address = rhs._remote_address;
+        _remote_port = rhs._remote_port;
+        _conn_type = rhs._conn_type;
+        _addr_type = rhs._addr_type;
+        _parsed_address = rhs._parsed_address;
+    }
+
+    NetAddress &operator=(const NetAddress &rhs) {
+        if (&rhs != this) {
+            _remote_address = rhs._remote_address;
+            _remote_port = rhs._remote_port;
+            _conn_type = rhs._conn_type;
+            _addr_type = rhs._addr_type;
+            _parsed_address = rhs._parsed_address;
+        }
+        return *this;
+    }
+
     string &addr() {
         return _remote_address;
     }
