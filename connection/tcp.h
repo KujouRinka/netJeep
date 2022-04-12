@@ -41,7 +41,7 @@ private:
     tcp_sock_p _out_sock;
     ip::tcp::resolver _resolver;
 
-    void dialHelper(ip::tcp::endpoint ep, holder_p holder);
+    void dialHelper(const ip::tcp::endpoint& ep, holder_p holder);
 };
 
 #endif

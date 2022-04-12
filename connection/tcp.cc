@@ -1,5 +1,7 @@
 #include "tcp.h"
 
+#include <utility>
+
 #include "conn_holder.h"
 
 using namespace std;
@@ -8,7 +10,7 @@ extern int conn_closed;
 extern std::mutex closed_count_lock;
 
 TCPIn::TCPIn(tcp_sock_p p, ConnHolder *holder, proxy::AcceptStrategy *strategy)
-        : _in_sock(p), InConn(holder, strategy) {}
+        : _in_sock(std::move(p)), InConn(holder, strategy) {}
 
 void TCPIn::toInRead(holder_p holder) {
     _strategy->toInRead(_holder, this);
@@ -40,18 +42,18 @@ void TCPIn::inRead(holder_p holder) {
 }
 
 void TCPIn::inWrite(holder_p holder) {
-    _in_sock->async_write_some(
-            holder->OIBuf().data(),
-            [this, holder](const error_code err, ssize_t sz) {
-                // on_in_write
-                holder->OIBuf().consume(sz);
-                if (err) {
-                    cout << _holder->id() << ": in write: " << err.message() << endl;
-                    _holder->closeAll();
-                    return;
+    async_write(*_in_sock,
+                holder->OIBuf().data(),
+                [this, holder](const error_code err, ssize_t sz) {
+                    // on_in_write
+                    holder->OIBuf().consume(sz);
+                    if (err) {
+                        cout << _holder->id() << ": in write: " << err.message() << endl;
+                        _holder->closeAll();
+                        return;
+                    }
+                    _strategy->onInWrite(_holder, this);
                 }
-                _strategy->onInWrite(_holder, this);
-            }
     );
 }
 
@@ -107,18 +109,18 @@ void TCPOut::outRead(holder_p holder) {
 }
 
 void TCPOut::outWrite(holder_p holder) {
-    _out_sock->async_write_some(
-            holder->IOBuf().data(),
-            [this, holder](const error_code err, ssize_t sz) {
-                // on_out_write
-                holder->IOBuf().consume(sz);
-                if (err) {
-                    cout << _holder->id() << ": out write: " << err.message() << endl;
-                    _holder->closeAll();
-                    return;
+    async_write(*_out_sock,
+                holder->IOBuf().data(),
+                [this, holder](const error_code err, ssize_t sz) {
+                    // on_out_write
+                    holder->IOBuf().consume(sz);
+                    if (err) {
+                        cout << _holder->id() << ": out write: " << err.message() << endl;
+                        _holder->closeAll();
+                        return;
+                    }
+                    _strategy->onOutWrite(_holder, this);
                 }
-                _strategy->onOutWrite(_holder, this);
-            }
     );
 }
 
@@ -133,13 +135,15 @@ void TCPOut::dial(holder_p holder) {
     if (_holder->dialAddress().addr_type() == AddrType::Domain) {
         _resolver.async_resolve(
                 _holder->dialAddress().addr(), to_string(_holder->dialAddress().port()),
-                [this, cap = holder](const error_code err, ip::tcp::resolver::iterator it) {
+                [this, cap = holder](const error_code err, const ip::tcp::resolver::iterator &it) {
                     if (err)
                         return;
+                    cap->dialAddress().parsed_addr() = it->endpoint().address().to_string();
                     dialHelper(*it, cap);
                 }
         );
     } else {
+        holder->dialAddress().parsed_addr() = holder->dialAddress().addr();
         dialHelper(
                 ip::tcp::endpoint(
                         ip::address::from_string(_holder->dialAddress().addr()),
@@ -150,7 +154,7 @@ void TCPOut::dial(holder_p holder) {
     }
 }
 
-void TCPOut::dialHelper(ip::tcp::endpoint ep, holder_p holder) {
+void TCPOut::dialHelper(const ip::tcp::endpoint &ep, holder_p holder) {
     _out_sock->async_connect(
             ep, [this, cap = std::move(holder)](const error_code err) {
                 if (err) {
@@ -161,7 +165,10 @@ void TCPOut::dialHelper(ip::tcp::endpoint ep, holder_p holder) {
                 cout << cap->id() << ": TCP://" << cap->dialAddress().addr() << ":"
                      << cap->dialAddress().port() << " connected" << endl;
                 cap->toOutRead();
-                cap->toInRead();
+                if (cap->IOSize())
+                    cap->toOutWrite();
+                else
+                    cap->toInRead();
             }
     );
 }

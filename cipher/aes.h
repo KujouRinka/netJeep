@@ -20,14 +20,13 @@ namespace cipher::AES128 {
     public:
 
         // this constructor for dialer
-        Cipher(const char *raw_key)
+        explicit Cipher(const char *raw_key)
                 : _iv(AES::BLOCKSIZE) {
             makeKey(raw_key);
             // generate IV
             AutoSeededRandomPool prng;
             prng.GenerateBlock(_iv, _iv.size());
-            _encryption.SetKeyWithIV(_key, _key.size(), _iv);
-            _decryption.SetKeyWithIV(_key, _key.size(), _iv);
+            flushCipher();
         }
 
         // this constructor for listener
@@ -42,12 +41,17 @@ namespace cipher::AES128 {
         }
 
         void decryptTo(istream &is, ostream &os, size_t sz) {
-            FileSource fs(is, true, new StreamTransformationFilter(_decryption, new FileSink(os)));
+            FileSource fs(is, false, new StreamTransformationFilter(_decryption, new FileSink(os)));
             fs.Pump(sz);
         }
 
         auto &iv() {
             return _iv;
+        }
+
+        void flushCipher() {
+            _encryption.SetKeyWithIV(_key, _key.size(), _iv);
+            _decryption.SetKeyWithIV(_key, _key.size(), _iv);
         }
 
     private:

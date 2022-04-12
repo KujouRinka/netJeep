@@ -12,15 +12,15 @@ using namespace std;
 
 namespace proxy::AES128 {
     using cipher_p = shared_ptr<cipher::AES128::Cipher>;
-    class ListenHandshake;
-    class ListenEstablished;
+    class AcceptHandshake;
+    class AcceptEstablished;
     class DialHandshake;
     class DialEstablished;
 
     class Acceptor : public AcceptStrategy {
     public:
-        using Handshake = ListenHandshake;
-        using Established = ListenEstablished;
+        using Handshake = AcceptHandshake;
+        using Established = AcceptEstablished;
     public:
         Acceptor(cipher_p cipher, ConnHolder *holder);
         virtual ~Acceptor() = default;
@@ -34,17 +34,17 @@ namespace proxy::AES128 {
         cipher_p _cipher;
     };
 
-    class ListenHandshake : public Acceptor {
+    class AcceptHandshake : public Acceptor {
     public:
-        ListenHandshake(cipher_p cipher, ConnHolder *holder);
+        AcceptHandshake(cipher_p cipher, ConnHolder *holder);
         ssize_t toInWrite(ConnHolder *holder, InConn *in) override;     // encrypt before write
         ssize_t onInRead(ConnHolder *holder, InConn *in) override;      // decrypt after read
         ssize_t onInWrite(ConnHolder *holder, InConn *in) override;
     };
 
-    class ListenEstablished : public Acceptor {
+    class AcceptEstablished : public Acceptor {
     public:
-        ListenEstablished(cipher_p cipher, ConnHolder *holder);
+        AcceptEstablished(cipher_p cipher, ConnHolder *holder);
         ssize_t toInWrite(ConnHolder *holder, InConn *in) override;     // encrypt before write
         ssize_t onInRead(ConnHolder *holder, InConn *in) override;      // decrypt after read
         ssize_t onInWrite(ConnHolder *holder, InConn *in) override;
@@ -56,7 +56,7 @@ namespace proxy::AES128 {
         using Handshake = DialHandshake;
         using Established = DialEstablished;
     public:
-        Dialer(cipher_p cipher);
+        explicit Dialer(cipher_p cipher);
         virtual ~Dialer() = default;
 
         void stop() override;

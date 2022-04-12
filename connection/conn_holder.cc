@@ -21,7 +21,8 @@ ConnHolder::ConnHolder(asio::io_context &ctx, in_p in, long long id)
 
 ConnHolder::~ConnHolder() {
     _in->strategy()->stop();
-    _out->strategy()->stop();
+    if (_out)
+        _out->strategy()->stop();
     closed_count_lock.lock();
     ++conn_closed;
     closed_count_lock.unlock();
@@ -69,7 +70,10 @@ void ConnHolder::dial() {
             _dial = NetAddress(ConnType::TCP, AddrType::IPv4, "127.0.0.1", 23333);
             _out = make_shared<TCPOut>(
                     this,
-                    proxy::AES128::Dialer::startStat(make_shared<cipher::AES128::Cipher>("hello this is a cipher"), this)
+                    proxy::AES128::Dialer::startStat(
+                            make_shared<cipher::AES128::Cipher>("hello this is a cipher"),
+                            this
+                    )
             );
             _out->dial(shared_from_this());
             break;
