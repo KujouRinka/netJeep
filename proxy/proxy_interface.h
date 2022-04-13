@@ -25,8 +25,26 @@ namespace proxy {
      */
     class AcceptStrategy {
     public:
+        /**
+         * toInRead will be called before holder->inRead() be called.
+         * It does prepare job before async_read from in_socket.
+         *
+         * @param holder ConnHolder which holds owner of AcceptStrategy.
+         * @param in InConn which holds this AcceptStrategy.
+         * @return returns -1 if operation failed.
+         */
         virtual ssize_t toInRead(ConnHolder *holder, InConn *in);
+
+        /**
+         * toInWrite will be call before hold->inWrite() be called.
+         * It does job such as append protocol header or encrypt data in OIBuf.
+         *
+         * @param holder ConnHolder which holds owner of AcceptStrategy.
+         * @param in InConn which holds this AcceptStrategy.
+         * @return returns -1 if operation failed.
+         */
         virtual ssize_t toInWrite(ConnHolder *holder, InConn *in);
+
         /**
          * onInRead will be called in callback of async read of in socket.
          * It calls holder->toOutWrite() when all jobs done.
@@ -64,8 +82,26 @@ namespace proxy {
      */
     class DialStrategy {
     public:
+        /**
+         * toOutRead will be called before holder->outRead() be called.
+         * It does prepare job before async_read from in_socket.
+         *
+         * @param holder ConnHolder which holds owner of AcceptStrategy.
+         * @param in InConn which holds this AcceptStrategy.
+         * @return returns -1 if operation failed.
+         */
         virtual ssize_t toOutRead(ConnHolder *holder, OutConn *out);
+
+        /**
+         * toOutWrite will be called before holder->outWrite() be called.
+         * It does job such as append protocol header or encrypt data in OIBuf.
+         *
+         * @param holder ConnHolder which holds owner of AcceptStrategy.
+         * @param in InConn which holds this AcceptStrategy.
+         * @return returns -1 if operation failed.
+         */
         virtual ssize_t toOutWrite(ConnHolder *holder, OutConn *out);
+
         /**
          * onOutRead will be called in callback of async read of out socket.
          * It calls holder->toInWrite() when all jobs done.

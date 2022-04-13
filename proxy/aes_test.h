@@ -11,7 +11,7 @@
 using namespace std;
 
 namespace proxy::AES128 {
-    using cipher_p = shared_ptr<cipher::AES128::Cipher>;
+    using cipher_p = shared_ptr<cipher::AES::Cipher<128>>;
     class AcceptHandshake;
     class AcceptEstablished;
     class DialHandshake;
