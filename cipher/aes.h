@@ -14,14 +14,15 @@
 using namespace std;
 using namespace CryptoPP;
 
-namespace cipher::AES128 {
+namespace cipher::AES {
 
+    template<unsigned int KEY_LENGTH>
     class Cipher {
     public:
 
         // this constructor for dialer
         explicit Cipher(const char *raw_key)
-                : _iv(AES::BLOCKSIZE) {
+                : _iv(CryptoPP::AES::BLOCKSIZE) {
             makeKey(raw_key);
             // generate IV
             AutoSeededRandomPool prng;
@@ -31,7 +32,7 @@ namespace cipher::AES128 {
 
         // this constructor for listener
         Cipher(const char *raw_key, const char *iv)
-                : _iv(AES::BLOCKSIZE) {
+                : _iv(CryptoPP::AES::BLOCKSIZE) {
 
         }
 
@@ -57,16 +58,16 @@ namespace cipher::AES128 {
     private:
         SecByteBlock _iv;
         SecByteBlock _key;
-        CFB_Mode<AES>::Encryption _encryption;
-        CFB_Mode<AES>::Decryption _decryption;
+        CFB_Mode<CryptoPP::AES>::Encryption _encryption;
+        CFB_Mode<CryptoPP::AES>::Decryption _decryption;
 
         void makeKey(const char *raw_key) {
             SHA256 hash;
             hash.Update((CryptoPP::byte *) raw_key, strlen(raw_key));
             string digest;
-            digest.resize(AES::DEFAULT_KEYLENGTH);
-            hash.TruncatedFinal((CryptoPP::byte *) digest.data(), AES::DEFAULT_KEYLENGTH);
-            _key.Append((CryptoPP::byte *) digest.data(), AES::DEFAULT_KEYLENGTH);
+            digest.resize(KEY_LENGTH / 8);
+            hash.TruncatedFinal((CryptoPP::byte *) digest.data(), KEY_LENGTH / 8);
+            _key.Append((CryptoPP::byte *) digest.data(), KEY_LENGTH / 8);
         }
     };
 

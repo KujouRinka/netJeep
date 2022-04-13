@@ -71,7 +71,7 @@ void ConnHolder::dial() {
             _out = make_shared<TCPOut>(
                     this,
                     proxy::AES128::Dialer::startStat(
-                            make_shared<cipher::AES128::Cipher>("hello this is a cipher"),
+                            make_shared<cipher::AES::Cipher<128>>("hello this is a cipher"),
                             this
                     )
             );
