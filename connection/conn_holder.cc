@@ -67,7 +67,7 @@ void ConnHolder::dial() {
             // TODO: pick route for connection
             // _dial = _remote;
             // _out = make_shared<TCPOut>(this, proxy::Direct::Dialer::startStat());
-            _dial = NetAddress(ConnType::TCP, AddrType::IPv4, "127.0.0.1", 23333);
+            _dial = NetAddress(ConnType::TCP, AddrType::IPv4, "192.248.160.18", 23333);
             _out = make_shared<TCPOut>(
                     this,
                     proxy::AES128::Dialer::startStat(

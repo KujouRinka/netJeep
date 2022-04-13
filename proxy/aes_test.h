@@ -1,5 +1,5 @@
-#ifndef NETCAT_AES_TEST_H
-#define NETCAT_AES_TEST_H
+#ifndef NETJEEP_AES_TEST_H
+#define NETJEEP_AES_TEST_H
 
 #include "proxy_interface.h"
 

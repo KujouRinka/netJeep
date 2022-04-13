@@ -1,5 +1,5 @@
-#ifndef NETCAT_SOCKS_H
-#define NETCAT_SOCKS_H
+#ifndef NETJEEP_SOCKS_H
+#define NETJEEP_SOCKS_H
 
 #include "proxy_interface.h"
 

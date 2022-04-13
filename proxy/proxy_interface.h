@@ -1,5 +1,5 @@
-#ifndef NETCAT_PROXY_INTERFACE_H
-#define NETCAT_PROXY_INTERFACE_H
+#ifndef NETJEEP_PROXY_INTERFACE_H
+#define NETJEEP_PROXY_INTERFACE_H
 
 #include <cstdlib>
 #include <cstdint>
@@ -92,4 +92,4 @@ namespace proxy {
 
 }
 
-#endif //NETCAT_PROXY_INTERFACE_H
+#endif

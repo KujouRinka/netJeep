@@ -1,5 +1,5 @@
-#ifndef NETCAT_CONN_HOLDER_H
-#define NETCAT_CONN_HOLDER_H
+#ifndef NETJEEP_CONN_HOLDER_H
+#define NETJEEP_CONN_HOLDER_H
 
 #include <iostream>
 #include <memory>

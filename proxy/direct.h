@@ -1,5 +1,5 @@
-#ifndef NETCAT_DIRECT_H
-#define NETCAT_DIRECT_H
+#ifndef NETJEEP_DIRECT_H
+#define NETJEEP_DIRECT_H
 
 #include "proxy_interface.h"
 

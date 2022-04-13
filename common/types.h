@@ -1,5 +1,5 @@
-#ifndef NETCAT_TYPES_H
-#define NETCAT_TYPES_H
+#ifndef NETJEEP_TYPES_H
+#define NETJEEP_TYPES_H
 
 #include <memory>
 #include <asio.hpp>

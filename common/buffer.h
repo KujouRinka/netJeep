@@ -2,8 +2,8 @@
 // Buffer for data transfer has been
 // replaced by asio::streambuf
 
-#ifndef NETCAT_BUFFER_H
-#define NETCAT_BUFFER_H
+#ifndef NETJEEP_BUFFER_H
+#define NETJEEP_BUFFER_H
 
 #include <cstdlib>
 #include <cstring>

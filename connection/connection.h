@@ -1,5 +1,5 @@
-#ifndef NETCAT_CONNECTION_H
-#define NETCAT_CONNECTION_H
+#ifndef NETJEEP_CONNECTION_H
+#define NETJEEP_CONNECTION_H
 
 #include <asio.hpp>
 

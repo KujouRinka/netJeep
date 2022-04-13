@@ -62,8 +62,6 @@ ssize_t AcceptHandshake::onInRead(ConnHolder *holder, InConn *in) {
 
     uint8_t buffer[257];    // address & port
     holder->IOBufStream().read((char *) buffer, next_min_len);
-    cout.write((char *)buffer, next_min_len);
-    cout << endl;
     string address;
     uint16_t port = ((uint16_t) *(buffer + next_min_len - 2) << 8) + *(buffer + next_min_len - 1);
     if (type == 0x01) {     // parse IPv4

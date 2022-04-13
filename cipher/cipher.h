@@ -1,5 +1,5 @@
-#ifndef NETCAT_CIPHER_H
-#define NETCAT_CIPHER_H
+#ifndef NETJEEP_CIPHER_H
+#define NETJEEP_CIPHER_H
 
 #include "aes.h"
 

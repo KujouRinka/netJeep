@@ -1,5 +1,5 @@
-#ifndef NETCAT_AES_H
-#define NETCAT_AES_H
+#ifndef NETJEEP_AES_H
+#define NETJEEP_AES_H
 
 #include <string>
 #include <memory>
