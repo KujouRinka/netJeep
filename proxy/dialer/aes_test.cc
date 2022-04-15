@@ -16,8 +16,9 @@ void Dialer::stop() {
     delete this;
 }
 
-proxy::DialStrategy *Dialer::startStat(cipher_p cipher, ConnHolder *holder) {
-    return new Handshake(std::move(cipher), holder);
+proxy::DialStrategy *Dialer::startStat(const char *passwd, ConnHolder *holder) {
+    cipher_p c(new cipher::AES::Cipher<128>(passwd));
+    return new Handshake(std::move(c), holder);
 }
 
 DialHandshake::DialHandshake(cipher_p cipher, ConnHolder *holder) : Dialer(std::move(cipher)) {

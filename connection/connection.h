@@ -50,8 +50,8 @@ protected:
  */
 class OutConn {
 public:
-    OutConn(ConnHolder *holder, proxy::DialStrategy *strategy)
-            : _holder(holder), _strategy(strategy) {}
+    OutConn(ConnHolder *holder, dial_core core)
+            : _holder(holder), _strategy(core.first), _dial(*core.second) {}
     virtual ~OutConn() = default;
 
     virtual void toOutRead(holder_p holder);
@@ -68,6 +68,7 @@ public:
 protected:
     ConnHolder *_holder;
     proxy::DialStrategy *_strategy;
+    NetAddress _dial;
 };
 
 // below are inline methods' definitions.

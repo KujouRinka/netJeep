@@ -22,21 +22,20 @@ namespace proxy::AES128 {
         using Handshake = AcceptHandshake;
         using Established = AcceptEstablished;
     public:
-        Acceptor(cipher_p cipher, ConnHolder *holder);
+        explicit Acceptor(cipher_p cipher);
         virtual ~Acceptor() = default;
 
         void stop() override;
 
-        static AcceptStrategy *startStat(cipher_p cipher, ConnHolder *holder);
+        static AcceptStrategy *startStat(cipher_p cipher);
 
     protected:
-        uint8_t _pumped;
         cipher_p _cipher;
     };
 
     class AcceptHandshake : public Acceptor {
     public:
-        AcceptHandshake(cipher_p cipher, ConnHolder *holder);
+        explicit AcceptHandshake(cipher_p cipher);
         ssize_t toInWrite(ConnHolder *holder, InConn *in) override;     // encrypt before write
         ssize_t onInRead(ConnHolder *holder, InConn *in) override;      // decrypt after read
         ssize_t onInWrite(ConnHolder *holder, InConn *in) override;
@@ -44,7 +43,7 @@ namespace proxy::AES128 {
 
     class AcceptEstablished : public Acceptor {
     public:
-        AcceptEstablished(cipher_p cipher, ConnHolder *holder);
+        explicit AcceptEstablished(cipher_p cipher);
         ssize_t toInWrite(ConnHolder *holder, InConn *in) override;     // encrypt before write
         ssize_t onInRead(ConnHolder *holder, InConn *in) override;      // decrypt after read
         ssize_t onInWrite(ConnHolder *holder, InConn *in) override;
@@ -61,7 +60,7 @@ namespace proxy::AES128 {
 
         void stop() override;
 
-        static DialStrategy *startStat(cipher_p cipher, ConnHolder *holder);
+        static DialStrategy *startStat(const char *passwd, ConnHolder *holder);
 
     protected:
         cipher_p _cipher;

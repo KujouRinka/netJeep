@@ -75,9 +75,9 @@ void TCPIn::closeMe(CloseType type) {
     }
 }
 
-TCPOut::TCPOut(ConnHolder *holder, proxy::DialStrategy *strategy)
+TCPOut::TCPOut(ConnHolder *holder, dial_core core)
         : _out_sock(new tcp_sock(holder->getCtx())),
-          OutConn(holder, strategy), _resolver(holder->getCtx()) {}
+          OutConn(holder, core), _resolver(holder->getCtx()) {}
 
 void TCPOut::toOutRead(holder_p holder) {
     _strategy->toOutRead(_holder, this);
@@ -129,25 +129,25 @@ void TCPOut::dial(holder_p holder) {
          << _holder->remote().addr() << ":"
          << _holder->remote().port() << " connecting" << endl;
     cout << _holder->id() << ": TCP://"
-         << _holder->dialAddress().addr() << ":"
-         << _holder->dialAddress().port() << " dialing" << endl;
+         << _dial.addr() << ":"
+         << _dial.port() << " dialing" << endl;
     // TODO: route pick
-    if (_holder->dialAddress().addr_type() == AddrType::Domain) {
+    if (_dial.addr_type() == AddrType::Domain) {
         _resolver.async_resolve(
-                _holder->dialAddress().addr(), to_string(_holder->dialAddress().port()),
+                _dial.addr(), to_string(_dial.port()),
                 [this, cap = holder](const error_code err, const ip::tcp::resolver::iterator &it) {
                     if (err)
                         return;
-                    cap->dialAddress().parsed_addr() = it->endpoint().address().to_string();
+                    _dial.parsed_addr() = it->endpoint().address().to_string();
                     dialHelper(*it, cap);
                 }
         );
     } else {
-        holder->dialAddress().parsed_addr() = holder->dialAddress().addr();
+        _dial.parsed_addr() = _dial.addr();
         dialHelper(
                 ip::tcp::endpoint(
-                        ip::address::from_string(_holder->dialAddress().addr()),
-                        _holder->dialAddress().port()
+                        ip::address::from_string(_dial.addr()),
+                        _dial.port()
                 ),
                 holder
         );
@@ -158,12 +158,12 @@ void TCPOut::dialHelper(const ip::tcp::endpoint &ep, holder_p holder) {
     _out_sock->async_connect(
             ep, [this, cap = std::move(holder)](const error_code err) {
                 if (err) {
-                    cout << cap->id() << ": " << cap->dialAddress().addr() << ":"
-                         << cap->dialAddress().port() << " connect error" << endl;
+                    cout << cap->id() << ": " << _dial.addr() << ":"
+                         << _dial.port() << " connect error" << endl;
                     return;
                 }
-                cout << cap->id() << ": TCP://" << cap->dialAddress().addr() << ":"
-                     << cap->dialAddress().port() << " connected" << endl;
+                cout << cap->id() << ": TCP://" << _dial.addr() << ":"
+                     << _dial.port() << " connected" << endl;
                 cap->toOutRead();
                 if (cap->IOSize())
                     cap->toOutWrite();

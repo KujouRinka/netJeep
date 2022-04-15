@@ -13,6 +13,6 @@ link_libraries(pthread cryptopp)
 link_directories("/usr/local/lib")
 
 include_directories(./)
-file(GLOB_RECURSE SOURCES "proxy/*.*" connection/*.* common/*.* cipher/*.*)
+file(GLOB_RECURSE SOURCES "proxy/*.*" connection/*.* common/*.* cipher/*.* router/*.* proxy_manager/*.*)
 
 add_executable(netcat main.cc ${SOURCES})

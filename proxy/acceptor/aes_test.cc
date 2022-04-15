@@ -7,17 +7,17 @@
 
 using namespace proxy::AES128;
 
-Acceptor::Acceptor(cipher_p cipher, ConnHolder *holder) : _pumped(0), _cipher(std::move(cipher)) {}
+Acceptor::Acceptor(cipher_p cipher) : _cipher(std::move(cipher)) {}
 
 void Acceptor::stop() {
     delete this;
 }
 
-proxy::AcceptStrategy *Acceptor::startStat(cipher_p cipher, ConnHolder *holder) {
-    return new Handshake(std::move(cipher), holder);
+proxy::AcceptStrategy *Acceptor::startStat(cipher_p cipher) {
+    return new Handshake(std::move(cipher));
 }
 
-AcceptHandshake::AcceptHandshake(cipher_p cipher, ConnHolder *holder) : Acceptor(std::move(cipher), holder) {}
+AcceptHandshake::AcceptHandshake(cipher_p cipher) : Acceptor(std::move(cipher)) {}
 
 // Do nothing. This won't be called in this stage
 ssize_t AcceptHandshake::toInWrite(ConnHolder *holder, InConn *in) {
@@ -87,7 +87,7 @@ ssize_t AcceptHandshake::onInRead(ConnHolder *holder, InConn *in) {
     holder->remote().conn_type() = ConnType::TCP;
 
     // parse payload: [payload]
-    in->strategy() = new Established(_cipher, holder);
+    in->strategy() = new Established(_cipher);
     delete this;
     holder->dial();
     return 0;
@@ -97,7 +97,7 @@ ssize_t AcceptHandshake::onInWrite(ConnHolder *holder, InConn *in) {
     return 0;
 }
 
-AcceptEstablished::AcceptEstablished(cipher_p cipher, ConnHolder *holder) : Acceptor(std::move(cipher), holder) {}
+AcceptEstablished::AcceptEstablished(cipher_p cipher) : Acceptor(std::move(cipher)) {}
 
 ssize_t AcceptEstablished::toInWrite(ConnHolder *holder, InConn *in) {
     try {

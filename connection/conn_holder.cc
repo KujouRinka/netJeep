@@ -1,8 +1,8 @@
 #include "conn_holder.h"
 
 #include "tcp.h"
-#include "proxy/direct.h"
 
+#include "router/router.h"
 #include "proxy/proxy.h"
 #include "cipher/cipher.h"
 
@@ -61,29 +61,9 @@ void ConnHolder::outWrite() {
 }
 
 void ConnHolder::dial() {
-    // TODO: route pick
-    switch (_remote.conn_type()) {
-        case ConnType::TCP:
-            // TODO: pick route for connection
-            // _dial = _remote;
-            // _out = make_shared<TCPOut>(this, proxy::Direct::Dialer::startStat());
-            _dial = NetAddress(ConnType::TCP, AddrType::IPv4, "127.0.0.1", 23333);
-            _out = make_shared<TCPOut>(
-                    this,
-                    proxy::AES128::Dialer::startStat(
-                            make_shared<cipher::AES::Cipher<128>>("hello this is a cipher"),
-                            this
-                    )
-            );
-            _out->dial(shared_from_this());
-            break;
-        case ConnType::UDP:
-            // TODO: Kujourinka
-            break;
-        case ConnType::RAW:
-            // TODO: Kujourinka
-            break;
-    }
+    _out = router->pickRoute(this, _remote);
+    if (_out)
+        _out->dial(shared_from_this());
 }
 
 void ConnHolder::closeIn(CloseType type) {

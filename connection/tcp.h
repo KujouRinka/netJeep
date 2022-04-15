@@ -27,7 +27,7 @@ private:
  */
 class TCPOut : public OutConn {
 public:
-    TCPOut(ConnHolder *holder, proxy::DialStrategy *strategy);
+    TCPOut(ConnHolder *holder, dial_core core);
 
     void toOutRead(holder_p holder) override;
     void toOutWrite(holder_p holder) override;

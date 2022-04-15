@@ -1,12 +1,19 @@
 #ifndef NETJEEP_TYPES_H
 #define NETJEEP_TYPES_H
 
+#include <utility>
 #include <memory>
 #include <asio.hpp>
 
 class ConnHolder;
 class InConn;
 class OutConn;
+namespace proxy {
+    class AcceptStrategy;
+    class DialStrategy;
+}
+class NetAddress;
+
 
 constexpr ssize_t MAX_BUF_SIZE = 2048;
 
@@ -22,6 +29,8 @@ using raw_sock_p = std::shared_ptr<raw_sock>;
 
 using in_p = std::shared_ptr<InConn>;
 using out_p = std::shared_ptr<OutConn>;
+
+using dial_core = std::pair<proxy::DialStrategy *, NetAddress *>;
 
 enum class ConnType {
     RAW = 0,
