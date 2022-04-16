@@ -1,7 +1,7 @@
-#ifndef NETJEEP_AES_TEST_H
-#define NETJEEP_AES_TEST_H
+#ifndef NETJEEP_PROXY_AES_TEST_H
+#define NETJEEP_PROXY_AES_TEST_H
 
-#include "proxy_interface.h"
+#include "interface.h"
 
 #include <string>
 #include <memory>

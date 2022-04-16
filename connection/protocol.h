@@ -1,0 +1,6 @@
+#ifndef NETJEEP_CONNECTION_PROTOCOL_H
+#define NETJEEP_CONNECTION_PROTOCOL_H
+
+#include "tcp.h"
+
+#endif

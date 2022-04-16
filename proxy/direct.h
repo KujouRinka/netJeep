@@ -1,7 +1,7 @@
-#ifndef NETJEEP_DIRECT_H
-#define NETJEEP_DIRECT_H
+#ifndef NETJEEP_PROXY_DIRECT_H
+#define NETJEEP_PROXY_DIRECT_H
 
-#include "proxy_interface.h"
+#include "interface.h"
 
 #include <string>
 #include <mutex>

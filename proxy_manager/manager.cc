@@ -2,15 +2,12 @@
 
 #include <memory>
 #include <functional>
-#include <asio.hpp>
 
-#include <cstdlib>
-#include <cstring>
+#include "asio.hpp"
 
-#include "connection/tcp.h"
+#include "connection/protocol.h"
 #include "connection/conn_holder.h"
 #include "proxy/proxy.h"
-#include "common/net.h"
 
 using namespace std;
 using namespace asio;
@@ -23,11 +20,6 @@ asio::io_context *AcceptorManager::_ctx = new io_context;
 vector<accept_call> AcceptorManager::_acceptor_holder;
 unordered_map<string, dial_core_builder> DialerManager::_tagged_dialer;
 dial_core_builder DialerManager::_default_builder;
-
-namespace proxy::Socks {
-    // template<typename T>
-    // void Acceptor::acceptFunc(asio::io_context &ctx, T listen_sock);
-}
 
 void acceptTCP(ip::tcp::acceptor *ac_sock, io_context &ctx) {
     tcp_sock_p sp(new tcp_sock(ctx));

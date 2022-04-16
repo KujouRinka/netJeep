@@ -1,11 +1,11 @@
 #ifndef NETJEEP_CONNECTION_H
 #define NETJEEP_CONNECTION_H
 
-#include <asio.hpp>
+#include "asio.hpp"
 
 #include "common/net.h"
 #include "common/types.h"
-#include "proxy/proxy_interface.h"
+#include "proxy/interface.h"
 
 using namespace asio;
 

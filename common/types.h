@@ -1,9 +1,10 @@
-#ifndef NETJEEP_TYPES_H
-#define NETJEEP_TYPES_H
+#ifndef NETJEEP_COMMON_TYPES_H
+#define NETJEEP_COMMON_TYPES_H
 
 #include <utility>
 #include <memory>
-#include <asio.hpp>
+
+#include "asio.hpp"
 
 class ConnHolder;
 class InConn;

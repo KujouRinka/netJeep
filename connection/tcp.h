@@ -1,5 +1,5 @@
-#ifndef NETJEEP_TCP_H
-#define NETJEEP_TCP_H
+#ifndef NETJEEP_CONNECTION_TCP_H
+#define NETJEEP_CONNECTION_TCP_H
 
 #include "connection.h"
 

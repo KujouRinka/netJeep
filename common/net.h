@@ -1,5 +1,5 @@
-#ifndef NETJEEP_NET_H
-#define NETJEEP_NET_H
+#ifndef NETJEEP_COMMON_NET_H
+#define NETJEEP_COMMON_NET_H
 
 #include <string>
 

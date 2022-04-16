@@ -1,7 +1,7 @@
 #include "default.h"
 
 #include "common/net.h"
-#include "connection/tcp.h"
+#include "connection/protocol.h"
 #include "proxy_manager/manager.h"
 
 out_p DefaultRouter::pickRoute(ConnHolder *holder, NetAddress &remote) {

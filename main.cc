@@ -1,10 +1,6 @@
 #include <iostream>
-#include <asio.hpp>
 
-#include "connection/tcp.h"
-#include "connection/conn_holder.h"
-
-#include "proxy/socks.h"
+#include "asio.hpp"
 #include "proxy_manager/manager.h"
 
 #include <mutex>

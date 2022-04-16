@@ -1,15 +1,15 @@
-#ifndef NETJEEP_AES_H
-#define NETJEEP_AES_H
+#ifndef NETJEEP_CIPHER_AES_H
+#define NETJEEP_CIPHER_AES_H
 
 #include <string>
 #include <memory>
 
-#include <cryptopp/cryptlib.h>
-#include <cryptopp/rijndael.h>
-#include <cryptopp/sha.h>
-#include <cryptopp/modes.h>
-#include <cryptopp/osrng.h>
-#include <cryptopp/files.h>
+#include "cryptopp/cryptlib.h"
+#include "cryptopp/rijndael.h"
+#include "cryptopp/sha.h"
+#include "cryptopp/modes.h"
+#include "cryptopp/osrng.h"
+#include "cryptopp/files.h"
 
 using namespace std;
 using namespace CryptoPP;

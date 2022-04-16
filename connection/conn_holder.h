@@ -1,10 +1,11 @@
-#ifndef NETJEEP_CONN_HOLDER_H
-#define NETJEEP_CONN_HOLDER_H
+#ifndef NETJEEP_CONNECTION_CONN_HOLDER_H
+#define NETJEEP_CONNECTION_CONN_HOLDER_H
 
 #include <iostream>
 #include <memory>
-#include <asio.hpp>
 #include <utility>
+
+#include "asio.hpp"
 
 #include "common/net.h"
 #include "common/types.h"

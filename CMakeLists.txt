@@ -17,9 +17,12 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 enable_testing()
+
+file(GLOB_RECURSE TESTS test/*.* config/*.*)
+file(GLOB_RECURSE SOURCES "proxy/*.*" connection/*.* common/*.* cipher/*.* router/*.* proxy_manager/*.* config/*.*)
 add_executable(
         test_netJeep
-        test/json_config_test.cc
+        ${TESTS}
 )
 target_link_libraries(
         test_netJeep
@@ -41,7 +44,6 @@ find_package(Boost 1.66.0 REQUIRED COMPONENTS system program_options)
 link_libraries(pthread cryptopp)
 
 include_directories(./)
-file(GLOB_RECURSE SOURCES "proxy/*.*" connection/*.* common/*.* cipher/*.* router/*.* proxy_manager/*.*)
 
 add_executable(netJeep main.cc ${SOURCES})
 target_link_libraries(netJeep nlohmann_json)

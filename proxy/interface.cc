@@ -1,4 +1,4 @@
-#include "proxy_interface.h"
+#include "interface.h"
 
 #include "connection/connection.h"
 #include "connection/conn_holder.h"
