@@ -1,0 +1,33 @@
+{
+  "acceptors": [
+    {
+      "tag": "my_socks",
+      "protocol": "socks"
+    },
+    {
+      "tag": "fake_shadowsocks_in",
+      "protocol": "aes_128_cfb_test",
+      "detail": {
+        "address": "0.0.0.0",
+        "port": 23333,
+        "password": "hello this is a cipher"
+      }
+    }
+  ],
+  "dialers": [
+    {
+      "tag": "direct",
+      "protocol": "direct"
+    },
+    {
+      "tag": "fake_shadowsocks_out",
+      "protocol": "aes_128_cfb_test",
+      "detail": {
+        "address": "remote.com",
+        "type": "domain",
+        "port": 42,
+        "password": "hello this is a cipher"
+      }
+    }
+  ]
+}
