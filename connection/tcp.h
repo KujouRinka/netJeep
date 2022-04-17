@@ -3,6 +3,8 @@
 
 #include "connection.h"
 
+#include "proxy_manager/types.h"
+
 class ConnHolder;
 
 /**
@@ -27,7 +29,7 @@ private:
  */
 class TCPOut : public OutConn {
 public:
-    TCPOut(ConnHolder *holder, dial_core core);
+    TCPOut(ConnHolder *holder, dialCore core);
 
     void toOutRead(holder_p holder) override;
     void toOutWrite(holder_p holder) override;

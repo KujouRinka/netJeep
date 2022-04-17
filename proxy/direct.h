@@ -3,8 +3,14 @@
 
 #include "interface.h"
 
+#include "proxy_manager/types.h"
+
 #include <string>
 #include <mutex>
+
+namespace Config {
+    class Dialer;
+}
 
 namespace proxy::Direct {
 
@@ -23,6 +29,7 @@ namespace proxy::Direct {
         static std::once_flag _of;
     };
 
+    dialCoreBuilder dialBuilderFromConfig(Config::Dialer &d);
 }
 
 #endif

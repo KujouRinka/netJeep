@@ -1,6 +1,6 @@
 #include "config.h"
 
-Config *loadConfig(const char *filename) {
+Config::Config *Config::loadConfig(const char *filename) {
     ifstream f(filename);
     json j;
     f >> j;
@@ -10,7 +10,7 @@ Config *loadConfig(const char *filename) {
     return config;
 }
 
-void to_json(json &j, const Detail *detail) {
+void Config::to_json(json &j, const Detail *detail) {
     if (detail == nullptr) {
         j = nullptr;
         return;
@@ -23,7 +23,7 @@ void to_json(json &j, const Detail *detail) {
     };
 }
 
-void from_json(const json &j, Detail *&detail) {
+void Config::from_json(const json &j, Detail *&detail) {
     if (detail == nullptr)
         detail = new Detail();
     try {
@@ -43,7 +43,7 @@ void from_json(const json &j, Detail *&detail) {
     } catch (...) {}
 }
 
-void to_json(json &j, const Accector &a) {
+void Config::to_json(json &j, const Acceptor &a) {
     j = json{
         {"tag",      a.tag},
         {"protocol", a.protocol},
@@ -51,7 +51,7 @@ void to_json(json &j, const Accector &a) {
     };
 }
 
-void from_json(const json &j, Accector &a) {
+void Config::from_json(const json &j, Acceptor &a) {
     try {
         j.at("tag").get_to(a.tag);
     } catch (...) {}
@@ -65,7 +65,7 @@ void from_json(const json &j, Accector &a) {
     }
 }
 
-void to_json(json &j, const Dialer &d) {
+void Config::to_json(json &j, const Dialer &d) {
     j = json{
         {"tag",      d.tag},
         {"protocol", d.protocol},
@@ -73,7 +73,7 @@ void to_json(json &j, const Dialer &d) {
     };
 }
 
-void from_json(const json &j, Dialer &d) {
+void Config::from_json(const json &j, Dialer &d) {
     try {
         j.at("tag").get_to(d.tag);
     } catch (...) {}
@@ -87,12 +87,12 @@ void from_json(const json &j, Dialer &d) {
     }
 }
 
-void to_json(json &j, const Config &c) {
+void Config::to_json(json &j, const Config &c) {
     j = json({{"acceptors", c.acceptors},
               {"dialers",   c.dialers}});
 }
 
-void from_json(const json &j, Config &c) {
+void Config::from_json(const json &j, Config &c) {
     try {
         j.at("acceptors").get_to(c.acceptors);
     } catch (...) {}

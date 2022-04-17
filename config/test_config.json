@@ -2,7 +2,12 @@
   "acceptors": [
     {
       "tag": "my_socks",
-      "protocol": "socks"
+      "protocol": "socks",
+      "detail": {
+        "address": "127.0.0.1",
+        "type": "IPv4",
+        "port": 8888
+      }
     },
     {
       "tag": "fake_shadowsocks_in",

@@ -2,6 +2,7 @@
 
 #include <utility>
 
+#include "proxy_manager/types.h"
 #include "conn_holder.h"
 
 using namespace std;
@@ -75,7 +76,7 @@ void TCPIn::closeMe(CloseType type) {
     }
 }
 
-TCPOut::TCPOut(ConnHolder *holder, dial_core core)
+TCPOut::TCPOut(ConnHolder *holder, dialCore core)
         : _out_sock(new tcp_sock(holder->getCtx())),
           OutConn(holder, core), _resolver(holder->getCtx()) {}
 

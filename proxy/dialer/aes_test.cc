@@ -5,6 +5,7 @@
 
 #include "connection/conn_holder.h"
 #include "connection/connection.h"
+#include "config/config.h"
 
 #include "cipher/cipher.h"
 
@@ -57,8 +58,8 @@ DialHandshake::DialHandshake(cipher_p cipher, ConnHolder *holder) : Dialer(std::
 
     // write IV and shadowsocks header to in to out buffer
     holder->IOBufStream().write(
-            (char *) _cipher->iv().data(),
-            _cipher->iv().size()
+        (char *) _cipher->iv().data(),
+        _cipher->iv().size()
     );
     holder->IOBufStream().write((char *) ss_header, ss_header_len);
 }
@@ -132,4 +133,16 @@ ssize_t DialEstablished::onOutRead(ConnHolder *holder, OutConn *out) {
 ssize_t DialEstablished::onOutWrite(ConnHolder *holder, OutConn *out) {
     holder->toInRead();
     return 0;
+}
+
+dialCoreBuilder proxy::AES128::dialBuilderFromConfig(Config::Dialer &d) {
+    auto passwd = d.detail->password.c_str();
+    auto n = new NetAddress;
+    n->addr() = d.detail->address;
+    n->port() = d.detail->port;
+    n->conn_type() = ConnType::TCP;
+    n->addr_type() = d.detail->type == "domain" ? AddrType::Domain : AddrType::IPv4;
+    return [n, passwd](ConnHolder *holder) -> dialCore {
+        return {Dialer::startStat(passwd, holder), n};
+    };
 }

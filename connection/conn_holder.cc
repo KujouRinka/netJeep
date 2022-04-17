@@ -3,11 +3,7 @@
 #include "tcp.h"
 
 #include "router/router.h"
-#include "proxy/proxy.h"
 #include "cipher/cipher.h"
-
-extern std::mutex closed_count_lock;
-extern long long conn_closed;
 
 ConnHolder::ConnHolder(asio::io_context &ctx, in_p in, long long id)
         : _ctx(ctx), _in(std::move(in)), _id(id),
@@ -23,9 +19,6 @@ ConnHolder::~ConnHolder() {
     _in->strategy()->stop();
     if (_out)
         _out->strategy()->stop();
-    closed_count_lock.lock();
-    ++conn_closed;
-    closed_count_lock.unlock();
 }
 
 void ConnHolder::toInRead() {

@@ -3,12 +3,20 @@
 
 #include "interface.h"
 
+#include "asio.hpp"
+
 #include <string>
 #include <memory>
 
+#include "proxy_manager/types.h"
 #include "cipher/cipher.h"
 
 using namespace std;
+
+namespace Config {
+    struct Acceptor;
+    struct Dialer;
+}
 
 namespace proxy::AES128 {
     using cipher_p = shared_ptr<cipher::AES::Cipher<128>>;
@@ -83,6 +91,9 @@ namespace proxy::AES128 {
         ssize_t onOutWrite(ConnHolder *holder, OutConn *out) override;
     };
 
+    void acceptTCP(asio::ip::tcp::acceptor *ac, asio::io_context &ctx, const char *passwd);
+    acceptFunc acceptFuncFromConfig(asio::io_context &ctx, Config::Acceptor &a);
+    dialCoreBuilder dialBuilderFromConfig(Config::Dialer &d);
 }
 
 #endif

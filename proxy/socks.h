@@ -9,6 +9,11 @@
 #include <string>
 
 #include "common/types.h"
+#include "proxy_manager/types.h"
+
+namespace Config {
+    struct Acceptor;
+}
 
 namespace proxy::Socks {
     /**
@@ -60,6 +65,9 @@ namespace proxy::Socks {
         static AcceptStrategy *_self;
         static std::once_flag _of;
     };
+
+    void acceptTCP(asio::ip::tcp::acceptor *ac, asio::io_context &ctx);
+    acceptFunc acceptFuncFromConfig(asio::io_context &ctx, Config::Acceptor &a);
 }
 
 #endif

@@ -1,7 +1,12 @@
 #include "proxy/socks.h"
 
+#include <memory>
+
 #include "connection/conn_holder.h"
 #include "connection/connection.h"
+#include "connection/protocol.h"
+
+#include "config/config.h"
 
 using namespace proxy::Socks;
 
@@ -86,12 +91,12 @@ ssize_t ReqParse::onInRead(ConnHolder *holder, InConn *in) {
     if (type == 0x01) {     // parse IPv4
         holder->remote().addr_type() = AddrType::IPv4;
         address.append(to_string(buffer[5]))
-                .append(1, '.')
-                .append(to_string(buffer[6]))
-                .append(1, '.')
-                .append(to_string(buffer[7]))
-                .append(1, '.')
-                .append(to_string(buffer[8]));
+            .append(1, '.')
+            .append(to_string(buffer[6]))
+            .append(1, '.')
+            .append(to_string(buffer[7]))
+            .append(1, '.')
+            .append(to_string(buffer[8]));
     } else if (type == 0x03) {  // parse DOMAIN
         holder->remote().addr_type() = AddrType::Domain;
         address.append(reinterpret_cast<const char *>(buffer + 5), buffer[4]);
@@ -139,4 +144,28 @@ ssize_t Established::onInWrite(ConnHolder *holder, InConn *in) {
 proxy::AcceptStrategy *Established::instance() {
     std::call_once(_of, [] { _self = new Established(); });
     return _self;
+}
+
+void proxy::Socks::acceptTCP(asio::ip::tcp::acceptor *ac, asio::io_context &ctx) {
+    tcp_sock_p sp(new tcp_sock(ctx));
+    ac->async_accept(*sp, [sp, ac, &ctx](const error_code err) {
+        if (!err) {
+            std::make_shared<ConnHolder>(
+                ctx, make_shared<TCPIn>(sp, nullptr, Acceptor::startStat()),
+                0
+            )->start();
+        }
+        acceptTCP(ac, ctx);
+    });
+}
+
+acceptFunc proxy::Socks::acceptFuncFromConfig(io_context &ctx, Config::Acceptor &a) {
+    if (a.protocol != "socks" || a.detail == nullptr)
+        return nullptr;
+    auto address = a.detail->address;
+    auto port = a.detail->port;
+    auto ac = new ip::tcp::acceptor(ctx, ip::tcp::endpoint(ip::address::from_string(address), port));
+    return [ac, &ctx]() {
+        acceptTCP(ac, ctx);
+    };
 }

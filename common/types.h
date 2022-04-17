@@ -31,8 +31,6 @@ using raw_sock_p = std::shared_ptr<raw_sock>;
 using in_p = std::shared_ptr<InConn>;
 using out_p = std::shared_ptr<OutConn>;
 
-using dial_core = std::pair<proxy::DialStrategy *, NetAddress *>;
-
 enum class ConnType {
     RAW = 0,
     TCP,

@@ -25,3 +25,9 @@ proxy::DialStrategy *Dialer::instance() {
 proxy::DialStrategy *Dialer::startStat() {
     return Dialer::instance();
 }
+
+dialCoreBuilder proxy::Direct::dialBuilderFromConfig(Config::Dialer &d) {
+    return [](ConnHolder *holder) -> dialCore {
+        return {Dialer::startStat(), nullptr};
+    };
+}

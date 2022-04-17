@@ -2,8 +2,10 @@
 
 #include <utility>
 
+#include "connection/protocol.h"
 #include "connection/connection.h"
 #include "connection/conn_holder.h"
+#include "config/config.h"
 
 using namespace proxy::AES128;
 
@@ -67,12 +69,12 @@ ssize_t AcceptHandshake::onInRead(ConnHolder *holder, InConn *in) {
     if (type == 0x01) {     // parse IPv4
         holder->remote().addr_type() = AddrType::IPv4;
         address.append(to_string(buffer[0]))
-                .append(1, '.')
-                .append(to_string(buffer[1]))
-                .append(1, '.')
-                .append(to_string(buffer[2]))
-                .append(1, '.')
-                .append(to_string(buffer[3]));
+            .append(1, '.')
+            .append(to_string(buffer[1]))
+            .append(1, '.')
+            .append(to_string(buffer[2]))
+            .append(1, '.')
+            .append(to_string(buffer[3]));
     } else if (type == 0x03) {  // parse DOMAIN
         holder->remote().addr_type() = AddrType::Domain;
         address.append(reinterpret_cast<const char *>(buffer), next_min_len - 2);
@@ -125,4 +127,30 @@ ssize_t AcceptEstablished::onInRead(ConnHolder *holder, InConn *in) {
 ssize_t AcceptEstablished::onInWrite(ConnHolder *holder, InConn *in) {
     holder->toOutRead();
     return 0;
+}
+
+void proxy::AES128::acceptTCP(asio::ip::tcp::acceptor *ac, asio::io_context &ctx, const char *passwd) {
+    tcp_sock_p sp(new tcp_sock(ctx));
+    ac->async_accept(*sp, [sp, ac, &ctx, passwd](const error_code err) {
+        if (!err) {
+            std::make_shared<ConnHolder>(
+                ctx, make_shared<TCPIn>(
+                    sp, nullptr, Acceptor::startStat(make_shared<cipher::AES::Cipher<128>>(passwd))
+                ),
+                0
+            )->start();
+        }
+        acceptTCP(ac, ctx, passwd);
+    });
+}
+
+acceptFunc proxy::AES128::acceptFuncFromConfig(io_context &ctx, Config::Acceptor &a) {
+    if (a.protocol != "aes_128_cfb_test" || a.detail == nullptr)
+        return nullptr;
+    auto address = a.detail->address;
+    auto port = a.detail->port;
+    auto ac = new ip::tcp::acceptor(ctx, ip::tcp::endpoint(ip::address::from_string(address), port));
+    return [ac, &ctx, a]() {
+        acceptTCP(ac, ctx, a.detail->password.c_str());
+    };
 }

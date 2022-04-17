@@ -5,14 +5,14 @@
 class ConfigTest : public ::testing::Test {
 protected:
     void SetUp() override{
-        _c = loadConfig("config/test_config.json");
+        _c = Config::loadConfig("config/test_config.json");
     }
 
     void TearDown() override {
         delete _c;
     }
 
-    Config *_c;
+    Config::Config *_c;
 };
 
 TEST_F(ConfigTest, configTest) {
@@ -24,7 +24,7 @@ TEST_F(ConfigTest, configTest) {
     auto &ss_out = _c->dialers[1];
     EXPECT_EQ(socks_in.tag, "my_socks");
     EXPECT_EQ(socks_in.protocol, "socks");
-    EXPECT_EQ(socks_in.detail, nullptr);
+    EXPECT_NE(socks_in.detail, nullptr);
     EXPECT_EQ(ss_in.tag, "fake_shadowsocks_in");
     EXPECT_EQ(ss_in.protocol, "aes_128_cfb_test");
     EXPECT_EQ(ss_in.detail->address, "0.0.0.0");

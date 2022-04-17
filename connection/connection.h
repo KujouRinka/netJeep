@@ -4,7 +4,7 @@
 #include "asio.hpp"
 
 #include "common/net.h"
-#include "common/types.h"
+#include "proxy_manager/types.h"
 #include "proxy/interface.h"
 
 using namespace asio;
@@ -50,7 +50,7 @@ protected:
  */
 class OutConn {
 public:
-    OutConn(ConnHolder *holder, dial_core core)
+    OutConn(ConnHolder *holder, dialCore core)
             : _holder(holder), _strategy(core.first), _dial(*core.second) {}
     virtual ~OutConn() = default;
 
