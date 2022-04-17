@@ -46,7 +46,7 @@ ssize_t AcceptHandshake::onInRead(ConnHolder *holder, InConn *in) {
     holder->IOBufStream().read((char *) &type, 1);
     uint8_t next_min_len;
     if (type == 0x01) {         // IPv4
-        next_min_len = 8;
+        next_min_len = 6;
     } else if (type == 0x03) {  // DOMAIN
         if (holder->IOSize() < 1)
             return -1;

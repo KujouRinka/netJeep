@@ -37,7 +37,6 @@ DialHandshake::DialHandshake(cipher_p cipher, ConnHolder *holder) : Dialer(std::
         from_chars(ip.data(), last, *p);
         int cur = -1;
         for (int i = 1; i < 4; ++i) {
-            cout << '.';
             cur = ip.find('.', cur + 1) + 1;
             from_chars(ip.data() + cur, last, *++p);
         }

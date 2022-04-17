@@ -90,13 +90,13 @@ ssize_t ReqParse::onInRead(ConnHolder *holder, InConn *in) {
     uint16_t port = ((uint16_t) *(buffer + buf_size - 2) << 8) + *(buffer + buf_size - 1);
     if (type == 0x01) {     // parse IPv4
         holder->remote().addr_type() = AddrType::IPv4;
-        address.append(to_string(buffer[5]))
+        address.append(to_string(buffer[4]))
+            .append(1, '.')
+            .append(to_string(buffer[5]))
             .append(1, '.')
             .append(to_string(buffer[6]))
             .append(1, '.')
-            .append(to_string(buffer[7]))
-            .append(1, '.')
-            .append(to_string(buffer[8]));
+            .append(to_string(buffer[7]));
     } else if (type == 0x03) {  // parse DOMAIN
         holder->remote().addr_type() = AddrType::Domain;
         address.append(reinterpret_cast<const char *>(buffer + 5), buffer[4]);
