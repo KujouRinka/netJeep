@@ -10,11 +10,18 @@ A simple extensible asynchronous network framework.
 
 [CryptoPP](https://www.cryptopp.com/) == 8.6
 
-#### todos:
+#### run
+
+run `apt install libboost-dev libasio-dev` for boost
+and asio installation.
+
+other requirements workings with cmake.
+
+#### todos
 
 - [ ] udp support
-- [ ] structured InConnection and OutConnection manager
-- [ ] json config parser
+- [x] ~~structured InConnection and OutConnection manager~~
+- [x] json config parser
 - [ ] router
 - [ ] logger
 
