@@ -11,7 +11,12 @@ const char *global_config_path;
 Config::Config *global_config;
 
 void init() {
-    global_config = Config::loadConfig(global_config_path);
+    try {
+        global_config = Config::loadConfig(global_config_path);
+    } catch (const std::exception &e) {
+        std::cerr << "config file format error" << std::endl;
+        exit(1);
+    }
     AcceptorManager::initWithContext(global_ctx);
     DialerManager::init();
 }

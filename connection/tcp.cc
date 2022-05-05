@@ -132,7 +132,6 @@ void TCPOut::dial(holder_p holder) {
     cout << _holder->id() << ": TCP://"
          << _dial.addr() << ":"
          << _dial.port() << " dialing" << endl;
-    // TODO: route pick
     if (_dial.addr_type() == AddrType::Domain) {
         _resolver.async_resolve(
                 _dial.addr(), to_string(_dial.port()),

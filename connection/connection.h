@@ -63,7 +63,7 @@ public:
     proxy::DialStrategy *&strategy();
 
     virtual void closeMe(CloseType type) = 0;
-    virtual void dial(holder_p holder/* route info */) = 0;
+    virtual void dial(holder_p holder) = 0;
 
 protected:
     ConnHolder *_holder;

@@ -11,11 +11,14 @@
 using namespace proxy::Socks;
 
 proxy::AcceptStrategy *Negotiation::_self;
-std::once_flag Negotiation::_of;
 proxy::AcceptStrategy *ReqParse::_self;
-std::once_flag ReqParse::_of;
 proxy::AcceptStrategy *Established::_self;
-std::once_flag Established::_of;
+
+void Acceptor::init() {
+    Negotiation::init();
+    ReqParse::init();
+    Established::init();
+}
 
 proxy::AcceptStrategy *Acceptor::startStat() {
     return Negotiation::instance();
@@ -50,8 +53,12 @@ ssize_t Negotiation::onInWrite(ConnHolder *holder, InConn *in) {
     return 0;
 }
 
+void Negotiation::init() {
+    if (_self == nullptr)
+        _self = new Negotiation();
+}
+
 proxy::AcceptStrategy *Negotiation::instance() {
-    std::call_once(_of, [] { _self = new Negotiation(); });
     return _self;
 }
 
@@ -126,8 +133,12 @@ ssize_t ReqParse::onInWrite(ConnHolder *holder, InConn *in) {
     return 0;
 }
 
+void ReqParse::init() {
+    if (_self == nullptr)
+        _self = new ReqParse();
+}
+
 proxy::AcceptStrategy *ReqParse::instance() {
-    std::call_once(_of, [] { _self = new ReqParse(); });
     return _self;
 }
 
@@ -141,8 +152,12 @@ ssize_t Established::onInWrite(ConnHolder *holder, InConn *in) {
     return 0;
 }
 
+void Established::init() {
+    if (_self == nullptr)
+        _self = new Established();
+}
+
 proxy::AcceptStrategy *Established::instance() {
-    std::call_once(_of, [] { _self = new Established(); });
     return _self;
 }
 
@@ -160,6 +175,7 @@ void proxy::Socks::acceptTCP(asio::ip::tcp::acceptor *ac, asio::io_context &ctx)
 }
 
 acceptFunc proxy::Socks::acceptFuncFromConfig(io_context &ctx, Config::Acceptor &a) {
+    Acceptor::init();
     if (a.protocol != "socks" || a.detail == nullptr)
         return nullptr;
     auto address = a.detail->address;

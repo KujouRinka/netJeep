@@ -5,7 +5,6 @@
 
 #include <cstdint>
 
-#include <mutex>
 #include <string>
 
 #include "common/types.h"
@@ -27,6 +26,7 @@ namespace proxy::Socks {
         ssize_t onInRead(ConnHolder *holder, InConn *in) override = 0;
         ssize_t onInWrite(ConnHolder *holder, InConn *in) override = 0;
 
+        static void init();
         static AcceptStrategy *startStat();
     };
 
@@ -34,36 +34,36 @@ namespace proxy::Socks {
     public:
         ssize_t onInRead(ConnHolder *holder, InConn *in) override;
         ssize_t onInWrite(ConnHolder *holder, InConn *in) override;
+        static void init();
         static AcceptStrategy *instance();
 
     private:
         Negotiation() = default;
         static AcceptStrategy *_self;
-        static std::once_flag _of;
     };
 
     class ReqParse : public Acceptor {
     public:
         ssize_t onInRead(ConnHolder *holder, InConn *in) override;
         ssize_t onInWrite(ConnHolder *holder, InConn *in) override;
+        static void init();
         static AcceptStrategy *instance();
 
     private:
         ReqParse() = default;
         static AcceptStrategy *_self;
-        static std::once_flag _of;
     };
 
     class Established : public Acceptor {
     public:
         ssize_t onInRead(ConnHolder *holder, InConn *in) override;
         ssize_t onInWrite(ConnHolder *holder, InConn *in) override;
+        static void init();
         static AcceptStrategy *instance();
 
     private:
         Established() = default;
         static AcceptStrategy *_self;
-        static std::once_flag _of;
     };
 
     void acceptTCP(asio::ip::tcp::acceptor *ac, asio::io_context &ctx);

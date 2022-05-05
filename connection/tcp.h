@@ -37,7 +37,7 @@ public:
     void outWrite(holder_p holder) override;
     void closeMe(CloseType type) override;
 
-    void dial(holder_p holder/* TODO: route info */) override;
+    void dial(holder_p holder) override;
 
 private:
     tcp_sock_p _out_sock;

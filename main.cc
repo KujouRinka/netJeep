@@ -2,7 +2,6 @@
 
 #include "asio.hpp"
 
-#include "config/config.h"
 #include "proxy_manager/manager.h"
 
 #include "init.h"

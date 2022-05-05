@@ -24,11 +24,17 @@ unordered_map<string, dialCoreBuilder> DialerManager::_tagged_dialer;
 dialCoreBuilder DialerManager::_default_builder;
 
 void AcceptorManager::init() {
-    for (Config::Acceptor &ac: global_config->acceptors) {
-        if (ac.protocol == "socks")
-            addAcceptable(ac.tag, proxy::Socks::acceptFuncFromConfig(*_ctx, ac));
-        if (ac.protocol == "aes_128_cfb_test")
-            addAcceptable(ac.tag, proxy::AES128::acceptFuncFromConfig(*_ctx, ac));
+    try {
+        for (Config::Acceptor &ac: global_config->acceptors) {
+            if (ac.protocol == "socks")
+                addAcceptable(ac.tag, proxy::Socks::acceptFuncFromConfig(*_ctx, ac));
+            if (ac.protocol == "aes_128_cfb_test")
+                addAcceptable(ac.tag, proxy::AES128::acceptFuncFromConfig(*_ctx, ac));
+        }
+    } catch (exception &e) {
+        cerr << "init config file error: in acceptors" << endl;
+        cerr << e.what() << endl;
+        exit(1);
     }
 }
 
@@ -54,13 +60,19 @@ void AcceptorManager::acceptAll() {
 }
 
 void DialerManager::init() {
-    for (Config::Dialer &d: global_config->dialers) {
-        if (d.protocol == "direct")
-            addDialerBuilder(d.tag, proxy::Direct::dialBuilderFromConfig(d));
-        if (d.protocol == "aes_128_cfb_test")
-            addDialerBuilder(d.tag, proxy::AES128::dialBuilderFromConfig(d));
+    try {
+        for (Config::Dialer &d: global_config->dialers) {
+            if (d.protocol == "direct")
+                addDialerBuilder(d.tag, proxy::Direct::dialBuilderFromConfig(d));
+            if (d.protocol == "aes_128_cfb_test")
+                addDialerBuilder(d.tag, proxy::AES128::dialBuilderFromConfig(d));
+        }
+        _default_builder = _tagged_dialer[global_config->dialers[0].tag];
+    } catch (exception &e) {
+        cerr << "init config file error: in dialers" << endl;
+        cerr << e.what() << endl;
+        exit(1);
     }
-    _default_builder = _tagged_dialer[global_config->dialers[0].tag];
 }
 
 void DialerManager::addDialerBuilder(string tag, dialCoreBuilder builder) {

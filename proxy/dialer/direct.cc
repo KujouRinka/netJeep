@@ -5,7 +5,6 @@
 using namespace proxy::Direct;
 
 proxy::DialStrategy *Dialer::_self;
-std::once_flag Dialer::_of;
 
 ssize_t Dialer::onOutRead(ConnHolder *holder, OutConn *out) {
     holder->toInWrite();
@@ -17,16 +16,17 @@ ssize_t Dialer::onOutWrite(ConnHolder *holder, OutConn *out) {
     return 0;
 }
 
-proxy::DialStrategy *Dialer::instance() {
-    std::call_once(_of, [] { _self = new Dialer; });
-    return _self;
+void Dialer::init() {
+    if (_self == nullptr)
+        _self = new Dialer;
 }
 
 proxy::DialStrategy *Dialer::startStat() {
-    return Dialer::instance();
+    return _self;
 }
 
 dialCoreBuilder proxy::Direct::dialBuilderFromConfig(Config::Dialer &d) {
+    Dialer::init();
     return [](ConnHolder *holder) -> dialCore {
         return {Dialer::startStat(), nullptr};
     };
