@@ -5,18 +5,10 @@
 #include "config/config.h"
 #include "proxy_manager/manager.h"
 
+#include "init.h"
+
 using namespace std;
 using namespace asio;
-
-io_context global_ctx;
-const char *global_config_path;
-Config::Config *global_config;
-
-void init() {
-    global_config = Config::loadConfig(global_config_path);
-    AcceptorManager::initWithContext(global_ctx);
-    DialerManager::init();
-}
 
 int main(int argc, char **argv) {
     cout << "config path: " << argv[1] << endl;

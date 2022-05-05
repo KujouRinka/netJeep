@@ -3,9 +3,9 @@ project(netJeep)
 
 set(CMAKE_CXX_STANDARD 17)
 
-if(NOT CMAKE_BUILD_TYPE)
+if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
-endif()
+endif ()
 
 include(FetchContent)
 
@@ -19,7 +19,10 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 file(GLOB_RECURSE TESTS test/*.* config/*.*)
-file(GLOB_RECURSE SOURCES "proxy/*.*" connection/*.* common/*.* cipher/*.* router/*.* proxy_manager/*.* config/*.*)
+file(GLOB_RECURSE SOURCES
+        "proxy/*.*" connection/*.* common/*.* cipher/*.* router/*.* proxy_manager/*.* config/*.*
+        init.h
+        )
 add_executable(
         test_netJeep
         ${TESTS}
