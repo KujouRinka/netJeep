@@ -55,8 +55,12 @@ ssize_t AcceptHandshake::onInRead(ConnHolder *holder, InConn *in) {
   } else if (type == 0x04) {  // IPv6
     next_min_len = 18;
     cout << holder->id() << ": unsupported type" << endl;
+    holder->closeAll();
+    return -1;
   } else {
     cout << holder->id() << ": unsupported type" << endl;
+    holder->closeAll();
+    return -1;
   }
 
   if (holder->IOSize() < next_min_len)
