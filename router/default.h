@@ -7,8 +7,8 @@ class ConnHolder;
 class NetAddress;
 
 class DefaultRouter : public Router {
-public:
-    out_p pickRoute(ConnHolder *holder, NetAddress &remote) override;
+ public:
+  out_p pickRoute(ConnHolder *holder, NetAddress &remote) override;
 };
 
 #endif

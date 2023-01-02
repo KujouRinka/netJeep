@@ -19,24 +19,24 @@ using namespace asio;
  *
  */
 class InConn {
-public:
-    InConn(ConnHolder *holder, proxy::AcceptStrategy *strategy)
-            : _holder(holder), _strategy(strategy) {}
-    virtual ~InConn() = default;
+ public:
+  InConn(ConnHolder *holder, proxy::AcceptStrategy *strategy)
+      : _holder(holder), _strategy(strategy) {}
+  virtual ~InConn() = default;
 
-    virtual void toInRead(holder_p holder);
-    virtual void toInWrite(holder_p holder);
-    virtual void inRead(holder_p holder) = 0;
-    virtual void inWrite(holder_p holder) = 0;
+  virtual void toInRead(holder_p holder);
+  virtual void toInWrite(holder_p holder);
+  virtual void inRead(holder_p holder) = 0;
+  virtual void inWrite(holder_p holder) = 0;
 
-    ConnHolder *&holder();
-    proxy::AcceptStrategy *&strategy();
+  ConnHolder *&holder();
+  proxy::AcceptStrategy *&strategy();
 
-    virtual void closeMe(CloseType type) = 0;
+  virtual void closeMe(CloseType type) = 0;
 
-protected:
-    ConnHolder *_holder;
-    proxy::AcceptStrategy *_strategy;
+ protected:
+  ConnHolder *_holder;
+  proxy::AcceptStrategy *_strategy;
 };
 
 /**
@@ -49,43 +49,43 @@ protected:
  *
  */
 class OutConn {
-public:
-    OutConn(ConnHolder *holder, dialCore core)
-            : _holder(holder), _strategy(core.first), _dial(*core.second) {}
-    virtual ~OutConn() = default;
+ public:
+  OutConn(ConnHolder *holder, dialCore core)
+      : _holder(holder), _strategy(core.first), _dial(*core.second) {}
+  virtual ~OutConn() = default;
 
-    virtual void toOutRead(holder_p holder);
-    virtual void toOutWrite(holder_p holder);
-    virtual void outRead(holder_p holder) = 0;
-    virtual void outWrite(holder_p holder) = 0;
+  virtual void toOutRead(holder_p holder);
+  virtual void toOutWrite(holder_p holder);
+  virtual void outRead(holder_p holder) = 0;
+  virtual void outWrite(holder_p holder) = 0;
 
-    ConnHolder *&holder();
-    proxy::DialStrategy *&strategy();
+  ConnHolder *&holder();
+  proxy::DialStrategy *&strategy();
 
-    virtual void closeMe(CloseType type) = 0;
-    virtual void dial(holder_p holder) = 0;
+  virtual void closeMe(CloseType type) = 0;
+  virtual void dial(holder_p holder) = 0;
 
-protected:
-    ConnHolder *_holder;
-    proxy::DialStrategy *_strategy;
-    NetAddress _dial;
+ protected:
+  ConnHolder *_holder;
+  proxy::DialStrategy *_strategy;
+  NetAddress _dial;
 };
 
 // below are inline methods' definitions.
 inline ConnHolder *&InConn::holder() {
-    return _holder;
+  return _holder;
 }
 
 inline proxy::AcceptStrategy *&InConn::strategy() {
-    return _strategy;
+  return _strategy;
 }
 
 inline ConnHolder *&OutConn::holder() {
-    return _holder;
+  return _holder;
 }
 
 inline proxy::DialStrategy *&OutConn::strategy() {
-    return _strategy;
+  return _strategy;
 }
 
 #endif

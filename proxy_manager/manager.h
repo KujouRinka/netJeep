@@ -10,37 +10,36 @@
 using namespace std;
 
 namespace asio {
-    class io_context;
+class io_context;
 }
 
 class AcceptorManager {
-public:
-    AcceptorManager() = delete;
-    static void init();
-    static void initWithContext(asio::io_context &ctx);
+ public:
+  AcceptorManager() = delete;
+  static void init();
+  static void initWithContext(asio::io_context &ctx);
 
-    static void addAcceptable(const string &tag, acceptFunc ac);
-    static AcceptorManager *getAcceptor();
-    static void acceptAll();
+  static void addAcceptable(const string &tag, acceptFunc ac);
+  static AcceptorManager *getAcceptor();
+  static void acceptAll();
 
-private:
-    static asio::io_context *_ctx;
-    static vector<acceptFunc> _acceptor_holder;
+ private:
+  static asio::io_context *_ctx;
+  static vector<acceptFunc> _acceptor_holder;
 };
 
-
 class DialerManager {
-public:
-    DialerManager() = delete;
-    static void init();
+ public:
+  DialerManager() = delete;
+  static void init();
 
-    static void addDialerBuilder(string tag, dialCoreBuilder builder);
-    static dialCore getDialCoreForHolder(const string &tag, ConnHolder *holder);
-    static dialCore getDefaultDialerForHolder(ConnHolder *holder);
+  static void addDialerBuilder(string tag, dialCoreBuilder builder);
+  static dialCore getDialCoreForHolder(const string &tag, ConnHolder *holder);
+  static dialCore getDefaultDialerForHolder(ConnHolder *holder);
 
-private:
-    static unordered_map<string, dialCoreBuilder> _tagged_dialer;
-    static dialCoreBuilder _default_builder;
+ private:
+  static unordered_map<string, dialCoreBuilder> _tagged_dialer;
+  static dialCoreBuilder _default_builder;
 };
 
 #endif

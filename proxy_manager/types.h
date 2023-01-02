@@ -7,6 +7,6 @@
 
 using acceptFunc = std::function<void()>;
 using dialCore = std::pair<proxy::DialStrategy *, NetAddress *>;
-using dialCoreBuilder = std::function<dialCore(ConnHolder *)>;
+using dialCoreBuilder = std::function<dialCore(ConnHolder * )>;
 
 #endif

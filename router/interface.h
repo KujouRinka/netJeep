@@ -4,14 +4,14 @@
 #include "common/types.h"
 
 namespace proxy {
-    class DialStrategy;
+class DialStrategy;
 }
 class NetAddress;
 class ConnHolder;
 
 class Router {
-public:
-    virtual out_p pickRoute(ConnHolder *holder, NetAddress &remote) = 0;
+ public:
+  virtual out_p pickRoute(ConnHolder *holder, NetAddress &remote) = 0;
 };
 
 #endif

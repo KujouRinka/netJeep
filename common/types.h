@@ -10,13 +10,13 @@ class ConnHolder;
 class InConn;
 class OutConn;
 namespace proxy {
-    class AcceptStrategy;
-    class DialStrategy;
+class AcceptStrategy;
+class DialStrategy;
 }
 class NetAddress;
 
-
-constexpr ssize_t MAX_BUF_SIZE = 2048;
+constexpr ssize_t
+MAX_BUF_SIZE = 2048;
 
 using holder_p = std::shared_ptr<ConnHolder>;
 
@@ -32,21 +32,21 @@ using in_p = std::shared_ptr<InConn>;
 using out_p = std::shared_ptr<OutConn>;
 
 enum class ConnType {
-    RAW = 0,
-    TCP,
-    UDP,
+  RAW = 0,
+  TCP,
+  UDP,
 };
 
 enum class AddrType {
-    IPv4 = 0,
-    IPv6,
-    Domain,
+  IPv4 = 0,
+  IPv6,
+  Domain,
 };
 
 enum class CloseType {
-    both = 0,
-    read,
-    write,
+  both = 0,
+  read,
+  write,
 };
 
 #endif
