@@ -3,6 +3,7 @@
 cmake-build-debug/
 cmake-build-release/
 config/config.json
+.DS_Store
 
 # Prerequisites
 *.d
